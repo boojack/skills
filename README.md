@@ -1,91 +1,131 @@
-# Skills
+# Skills Pipeline
 
-A four-stage pipeline for turning vague requests into executed code changes.
+A four-stage framework for converting vague requests into executed code changes through structured AI-safe workflows.
+
+## Overview
+
+This project implements a disciplined pipeline that separates **thinking**, **choosing**, **planning**, and **doing** into distinct stages. Each stage has clear boundaries, explicit non-goals, and validation requirements that prevent scope creep and ensure traceability.
 
 ```
 defining-problems → writing-designs → planning-tasks → executing-tasks
-      ↓                   ↓                 ↓                ↓
-  docs/problems/     docs/designs/     docs/plans/     docs/executions/
 ```
 
-## Pipeline Overview
-
-| Stage | Skill | Input | Output | Purpose |
-|-------|-------|-------|--------|---------|
-| 1. Thinking | `defining-problems` | Vague request | Problem definition | Clarify what the problem actually is |
-| 2. Choosing | `writing-designs` | Problem definition | Design document | Research and decide how to solve it |
-| 3. Planning | `planning-tasks` | Design document | Task plan | Break design into executable tasks |
-| 4. Doing | `executing-tasks` | Task plan | Code + execution log | Execute tasks exactly as written |
-
-## Key Principles
-
-**Separation of concerns** — Each skill does one thing. Thinking doesn't choose. Choosing doesn't plan. Planning doesn't execute.
-
-**Authority flows downstream** — Each stage's output is authoritative for the next. Execution cannot modify the plan. Planning cannot modify the design.
-
-**Immutability at boundaries** — Once a document is approved and passed downstream, it doesn't change. This makes AI execution safe to scale.
-
-**Explicit non-goals** — Every stage declares what it will NOT do. Scope creep is prevented by design.
-
-## Usage
-
-Each skill triggers automatically based on context:
+## Directory Structure
 
 ```
-"The bot is slow and gets confused"     → defining-problems
-"Design a solution for [problem]"        → writing-designs
-"Create tasks for [design]"              → planning-tasks
-"Execute the plan"                       → executing-tasks
+
+skills/                  # Skill definitions
+├── defining-problems/   # Stage 1: Problem definition
+├── writing-designs/     # Stage 2: Design research
+├── planning-tasks/      # Stage 3: Task planning
+└── executing-tasks/     # Stage 4: Execution
+docs/                    # Generated documents
+└── problems/            # Problem artifacts
+    └── YYYY-MM-DD-<slug>/
+        ├── definition.md
+        ├── design.md
+        ├── plan.md
+        └── execution.md
 ```
 
-Or invoke directly by name.
+## The Four Stages
 
-## Output Structure
+### Stage 1: Defining Problems
 
-```
-docs/
-├── problems/           # Problem definitions
-│   └── 2026-01-15-task-execution-latency.md
-├── designs/            # Design documents
-│   └── 2026-01-15-task-execution-latency.md
-├── plans/              # Task plans
-│   └── 2026-01-15-task-execution-latency.md
-└── executions/         # Execution logs
-    └── 2026-01-15-task-execution-latency.md
-```
+Converts vague requests into precise engineering problem definitions.
 
-Slugs are consistent across all stages for traceability.
+**Input:** Natural language request
+**Output:** `docs/problems/YYYY-MM-DD-<slug>/definition.md`
 
-## Skill Details
+Produces:
+- Background & Context
+- Problem Statement
+- Current State
+- Non-Goals
+- Open Questions
 
-### defining-problems
+Does NOT propose solutions or suggest architectures.
 
-Converts vague natural-language requests into precise engineering problem definitions.
+### Stage 2: Writing Designs
 
-**Sections:** Background & Context, Problem Statement, Current State, Non-Goals, Open Questions
+Researches industry solutions and produces evidence-based design documents.
 
-**Does NOT:** Propose solutions, design systems, or suggest architectures
+**Input:** Problem definition
+**Output:** `docs/problems/YYYY-MM-DD-<slug>/design.md`
 
-### writing-designs
+Produces:
+- References (5+ verified URLs)
+- Industry Baseline
+- Research Summary
+- Design Goals (verifiable/measurable)
+- Non-Goals
+- Proposed Design
 
-Researches industry solutions and produces a design document grounded in evidence.
+Does NOT write implementation code or create PRs.
 
-**Sections:** Problem Reference, References, Industry Baseline, Research Summary, Design Goals, Non-Goals, Proposed Design
+### Stage 3: Planning Tasks
 
-**Does NOT:** Implement code, create PRs, or make architectural changes
+Translates designs into concrete, ordered executable tasks.
 
-### planning-tasks
+**Input:** Design document
+**Output:** `docs/problems/YYYY-MM-DD-<slug>/plan.md`
 
-Translates a design into concrete, ordered tasks with implementation details.
+Each task includes:
+- Objective
+- Files to modify
+- Implementation details
+- Boundaries
+- Dependencies
+- Expected Outcome
+- Validation commands
 
-**Sections:** Problem Reference, Design Reference, Task List, Task Ordering Rationale, Out-of-Scope Tasks, Open Execution Questions, Readiness Declaration
+Does NOT merge/split tasks or make design decisions.
 
-**Does NOT:** Introduce new design decisions, modify the design, or write production code
-
-### executing-tasks
+### Stage 4: Executing Tasks
 
 Executes an approved task plan exactly as written.
 
-**Sections:** Plan Reference, Execution Log, Completion Declaration
+**Input:** Task plan with "Ready for execution" status
+**Output:** `docs/problems/YYYY-MM-DD-<slug>/execution.md`
 
-**Does NOT:** Modify the plan, merge/split/reorder tasks, introduce new tasks, or perform opportunistic refactors
+Records:
+- Per-task completion status
+- Files changed
+- Validation results
+- Any deviations (which indicate failure)
+
+Does NOT modify the plan, reorder tasks, or refactor opportunistically.
+
+## Key Principles
+
+| Principle | Description |
+|-----------|-------------|
+| **Separation of Concerns** | Each stage does exactly one thing |
+| **Authority Flows Downstream** | Each stage's output is authoritative for the next |
+| **Immutability at Boundaries** | Documents don't change once passed downstream |
+| **Explicit Non-Goals** | Every stage declares what it will NOT do |
+| **Traceability** | Consistent slug naming across all stages |
+
+## Usage
+
+Each skill triggers based on context or can be invoked directly:
+
+```
+# Start with a vague request
+"The bot is slow and gets confused"
+
+# Stage 1 produces a problem definition
+# Stage 2 researches and designs a solution
+# Stage 3 creates an executable task plan
+# Stage 4 executes the plan
+```
+
+## Anti-Patterns Prevented
+
+- Solution language in problem statements
+- Scope creep through vague non-goals
+- Implementation code in design documents
+- Skipping validation steps
+- Modifying plans during execution
+- Opportunistic refactoring during execution
+- Unverified references in research
