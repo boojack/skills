@@ -1,13 +1,11 @@
 ---
 name: defining-problems
-description: Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries. Converts vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions.
+description: Converts vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions. Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries.
 ---
 
 # Defining Problems
 
-Pre-research and pre-design gate. Converts vague requests into explicit, grounded, safe-to-work-on problem definitions.
-
-Does NOT propose solutions, design systems, optimize performance, or suggest architectures.
+Does NOT propose solutions, design systems, optimize performance, or suggest architectures. Output is a problem definition only.
 
 ## Workflow
 
@@ -29,8 +27,8 @@ Problem Definition Progress:
 
 Establish why this problem exists and what motivated the request.
 
-- Describe the domain, system, or user scenario relevant to the problem
-- Include any history or prior attempts if known
+- Describe the domain, system, or user scenario
+- Include history or prior attempts if known
 - Reference business or technical drivers
 - Keep factual — do NOT editorialize or advocate for a solution
 
@@ -48,7 +46,7 @@ Output:
 
 Translate the vague request into a precise engineering problem statement.
 
-- Rewrite using precise engineering language
+- Use precise engineering language
 - Prefer terminology already used in the codebase
 - Remove subjective or aspirational wording
 - Do NOT add requirements beyond what was stated
@@ -66,27 +64,38 @@ Write a single paragraph under: **## Problem Statement**
 Anchor the problem in the real codebase and its current behavior.
 
 - Identify relevant modules, directories, and files
-- List exact file paths
+- List exact file paths (verify they exist)
 - Note existing abstractions, patterns, or conventions
 - Describe current behavior, not desired behavior
-- Respect architectural boundaries already present
 
-If nothing relevant exists, explicitly write: "No existing implementation found."
+If nothing relevant exists, write: "No existing implementation found."
 
 Write under: **## Current State**
 
+**Example:**
+
+> ## Current State
+> Task execution is handled in `src/agent/task_runner.ts`, which processes commands sequentially through a queue. Action selection uses a rule-based system in `src/agent/actions/` with one file per action type. The bot currently logs action decisions to `logs/actions.log` but does not expose timing metrics.
+
 ### Step 4: Non-Goals
 
-Prevent scope creep and over-design in downstream phases.
+Prevent scope creep in downstream phases.
 
-Clearly define:
 - What is explicitly out of scope
 - What parts of the system must NOT be redesigned
-- What problems are adjacent but intentionally excluded
+- What adjacent problems are intentionally excluded
 
-Be conservative. When in doubt, mark it a non-goal.
+When in doubt, mark it a non-goal.
 
 Write under: **## Non-Goals**
+
+**Example:**
+
+> ## Non-Goals
+> - Redesigning the action system architecture
+> - Adding new action types
+> - Optimizing network latency between bot and game server
+> - Changing the command input format
 
 ### Step 5: Open Questions
 
@@ -99,7 +108,7 @@ List:
 Rules:
 - Do NOT answer the questions
 - Do NOT resolve assumptions
-- At least 3 items total must be listed
+- At least 3 items total
 
 Write under: **## Open Questions**
 
@@ -124,14 +133,20 @@ Review the completed output before delivering:
 2. Background & Context is factual with no solution language
 3. Problem Statement contains no solution language and no added requirements
 4. Current State references real files (verify paths exist)
-5. Non-Goals scopes conservatively — if in doubt, mark out of scope
+5. Non-Goals scopes conservatively
 6. Open Questions has at least 3 items and does not answer its own questions
 
 If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Missing any section invalidates the output.
+Save to `docs/problems/YYYY-MM-DD-<slug>.md` where:
+- `YYYY-MM-DD` is today's date
+- `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`)
+
+Create `docs/problems/` if it doesn't exist.
+
+ALWAYS use this exact template:
 
 ```markdown
 ## Background & Context
@@ -144,3 +159,5 @@ Missing any section invalidates the output.
 
 ## Open Questions
 ```
+
+Missing any section invalidates the output.
