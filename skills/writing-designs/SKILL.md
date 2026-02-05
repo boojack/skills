@@ -1,11 +1,11 @@
 ---
 name: writing-designs
-description: Researches how the industry solves a defined problem, collects references from Google, GitHub, GitLab, and Linear, then produces a design document with industry baseline, research summary, design goals, non-goals, and proposed design. Use when a problem definition exists in docs/problems/ and a concrete design is needed before implementation begins.
+description: Researches how the industry solves a defined problem, collects references from engineering blogs, open-source projects, and technical articles, then produces a design document with industry baseline, research summary, design goals, non-goals, and proposed design. Use when a problem definition exists in docs/problems/ and a concrete design is needed before implementation begins.
 ---
 
 # Writing Designs
 
-Takes a problem definition from `docs/problems/` as input. Produces a design document grounded in research, not speculation.
+Takes a problem definition (`definition.md`) from `docs/problems/YYYY-MM-DD-<slug>/` as input. Produces a design document grounded in research, not speculation.
 
 Does NOT implement code, create PRs, or make architectural changes. Output is a design document only.
 
@@ -26,9 +26,9 @@ Design Document Progress:
 
 ### Step 1: Load Problem Definition
 
-Read the problem definition file from `docs/problems/`.
+Read `definition.md` from the problem folder (`docs/problems/YYYY-MM-DD-<slug>/`).
 
-- If no file is specified, list available files and ask which one to use
+- If no folder is specified, list available folders and ask which one to use
 - Extract: background, problem statement, current state, non-goals, open questions
 - Note open questions that affect design decisions
 
@@ -36,21 +36,22 @@ Write the file path under: **## Problem Reference**
 
 ### Step 2: Research
 
-Search for how the industry solves this problem across:
+Search for how the industry solves this problem:
 
-1. **Google**: Engineering blogs, technical articles
-2. **GitHub**: Open-source implementations, patterns
-3. **GitLab**: Project solutions, architectural patterns
-4. **Linear**: Public issue discussions, solution approaches
+1. **Web search**: Engineering blogs, technical articles, documentation
+2. **GitHub**: Open-source implementations, issues, PRs showing patterns
 
-For each platform, use at least 2 search queries. Record URL, title, and one-line relevance summary.
+Prioritize primary sources from companies that have solved this problem at scale (e.g., Google, GitHub, Linear, Stripe, Meta, Netflix engineering blogs; conference talks; academic papers).
+
+Use at least 3 distinct search queries. Record URL, title, and one-line relevance summary.
 
 Write under: **## References**
 
 Rules:
 - At least 5 references total
-- Every reference must include a working URL
-- Do NOT fabricate URLs
+- Every reference must include a URL you actually visited
+- Use `WebFetch` to verify each URL loads before including it
+- Do NOT fabricate URLs or include URLs you haven't verified
 
 **Example:**
 
@@ -87,9 +88,20 @@ Synthesize findings into actionable insights.
 
 Write under: **## Research Summary**
 
+**Example:**
+
+> ## Research Summary
+>
+> 1. **Behavior trees dominate real-time AI**: 4/5 references prefer them over GOAP for predictable latency.
+> 2. **Event-driven beats polling**: mineflayer shows event listeners outperform tick-based polling.
+>
+> For this problem, behavior trees fit because latency is primary and action space is bounded.
+
 ### Step 5: Design Goals & Non-Goals
 
-**Design Goals** — derive from problem statement, must be measurable, order by priority.
+**Design Goals** — derive from problem statement, order by priority.
+
+Each goal must be **verifiable**: either a measurable metric (latency < 100ms) or a testable assertion (all keys renamed = no orphaned keys remain).
 
 **Non-Goals** — inherit all from problem definition, add any discovered during research.
 
@@ -99,8 +111,8 @@ Write under: **## Design Goals** and **## Non-Goals**
 
 > ## Design Goals
 >
-> 1. Reduce task execution latency to under 100ms
-> 2. Action selection produces correct behavior for 95%+ of multi-action states
+> 1. Reduce task execution latency to under 100ms (metric: p95 latency)
+> 2. Action selection produces correct behavior for 95%+ of multi-action states (metric: test suite pass rate)
 >
 > ## Non-Goals
 >
@@ -119,27 +131,30 @@ Rules:
 - Every decision traces to a design goal
 - Do NOT introduce scope beyond design goals
 - Make decisions, don't leave ambiguous choices
-- Pseudocode acceptable; implementation code is not
+- **Pseudocode acceptable; implementation code is not:**
+  - ✓ Pseudocode: `for each key in keysToMigrate: newKey = key.replace(oldSuffix, newSuffix)`
+  - ❌ Implementation: `keys.forEach((key) => localStorage.setItem(key.replace(old, new), val))`
+  - ✓ Showing existing code to explain current state is acceptable
+  - ❌ Writing new code ready to copy-paste is not
 
 Write under: **## Proposed Design**
 
 ### Step 7: Validate Output
 
-1. Problem Reference points to existing file
-2. References has 5+ entries with working URLs
-3. Industry Baseline cites references, no speculation
-4. Design Goals are measurable and trace to problem statement
-5. Non-Goals include all inherited items
+1. Problem Reference points to existing file (verify with `Read`)
+2. References has 5+ entries with verified URLs (each visited via `WebFetch`)
+3. Industry Baseline cites references by title, no speculation
+4. Design Goals are verifiable (metric or testable assertion) and trace to problem statement
+5. Non-Goals include all inherited items from problem definition
 6. Proposed Design traces every decision to a design goal
-7. No implementation code (pseudocode acceptable)
+7. **No contradictions between goals and design** — if a goal says "atomic" but design says "best-effort", reconcile them
+8. No implementation code (pseudocode acceptable)
 
 If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/designs/YYYY-MM-DD-<slug>.md` where `<slug>` matches the problem definition.
-
-Create `docs/designs/` if it doesn't exist.
+Save to `docs/problems/YYYY-MM-DD-<slug>/design.md` in the same folder as `definition.md`.
 
 ALWAYS use this exact template:
 
@@ -160,3 +175,11 @@ ALWAYS use this exact template:
 ```
 
 Missing any section invalidates the output.
+
+## Anti-patterns
+
+- ❌ Speculation: "Most apps probably use X" → ✓ "PDF.js uses X (PR #7793)"
+- ❌ Goal-design contradiction: atomic goal + best-effort design → ✓ reconcile them
+- ❌ Implementation code: `keys.filter(k => ...)` → ✓ "Collect keys ending with suffix"
+- ❌ Unverified URLs → ✓ every URL visited via `WebFetch`
+- ❌ Scope creep: features not traced to goals → ✓ every decision references a goal

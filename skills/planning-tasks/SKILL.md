@@ -5,9 +5,9 @@ description: Translates an approved design document into a concrete, ordered tas
 
 # Planning Tasks
 
-Takes a design document from `docs/designs/` and its corresponding problem definition from `docs/problems/` as input. Produces a task plan detailed enough for a coding agent to execute without re-deriving implementation from the design.
+Takes `design.md` and `definition.md` from `docs/problems/YYYY-MM-DD-<slug>/` as input. Produces a task plan detailed enough for a coding agent to execute without re-deriving implementation from the design.
 
-Does NOT introduce new design decisions, modify the design, or write production code. Output is a task plan only.
+Does NOT introduce new design decisions, modify the design, or write complete implementations. Output is a task plan with enough detail to execute, not pre-written code to copy.
 
 ## Workflow
 
@@ -29,10 +29,10 @@ Task Plan Progress:
 
 ### Step 1: Load Inputs
 
-Read both upstream documents:
+Read both upstream documents from the problem folder:
 
-1. **Design document** from `docs/designs/`
-2. **Problem definition** from `docs/problems/` (path in design's Problem Reference)
+1. **Design document**: `design.md`
+2. **Problem definition**: `definition.md`
 
 Extract: design goals, non-goals, proposed design, and current state.
 
@@ -81,6 +81,13 @@ Each task MUST use this exact format:
 **Validation**: `exact command` — expected output
 ```
 
+**Code detail guidance:**
+- ✓ Interfaces, type definitions, function signatures (complete — they define contracts)
+- ✓ Key logic as pseudocode or commented outline
+- ✓ Import statements and file structure
+- ❌ Complete function bodies (executing agent writes these)
+- ❌ Complete test implementations (describe what to test, not full test code)
+
 Write all tasks under: **## Task List**
 
 **Example:**
@@ -89,46 +96,20 @@ Write all tasks under: **## Task List**
 >
 > **Objective**: Record latency between command receipt and action initiation (design goal #1).
 >
-> **Files**:
-> - Create: `src/agent/metrics.ts`
-> - Modify: `src/agent/task_runner.ts`
-> - Test: `tests/agent/metrics.test.ts`
+> **Files**: Create `src/agent/metrics.ts`, Modify `src/agent/task_runner.ts`, Test `tests/agent/metrics.test.ts`
 >
 > **Implementation**:
->
-> 1. Create `src/agent/metrics.ts`:
->    ```typescript
->    export interface MetricsEntry {
->      command: string;
->      startTime: number;
->      actionInitTime: number;
->      latencyMs: number;
->    }
->
->    export function recordMetric(entry: MetricsEntry): void {
->      // Append JSON line to logs/metrics.log
->    }
->    ```
->
-> 2. Modify `src/agent/task_runner.ts`:
->    - Add import: `import { recordMetric } from './metrics'`
->    - In `executeTask()` (~line 45), capture `Date.now()` before processing
->    - After action initiated (~line 62), capture second timestamp
->    - Call `recordMetric()` with computed latency
->
-> 3. Create `tests/agent/metrics.test.ts`:
->    - "writes entry to metrics.log" — assert JSON contains expected fields
->    - "creates logs directory if missing" — assert dir exists after call
+> 1. Create `src/agent/metrics.ts`: `MetricsEntry` interface + `recordMetric()` function (appends JSON to logs/metrics.log)
+> 2. Modify `src/agent/task_runner.ts`: In `executeTask()` (~line 45), capture timestamps before/after processing, call `recordMetric()`
+> 3. Tests: "writes entry to metrics.log", "creates logs directory if missing"
 >
 > **Boundaries**: Must NOT change task queue logic or add external deps
 >
 > **Dependencies**: None
 >
-> **Expected Outcome**: Each task execution writes `{ command, startTime, actionInitTime, latencyMs }` to `logs/metrics.log`.
+> **Expected Outcome**: Each task execution writes latency JSON to `logs/metrics.log`
 >
-> **Validation**:
-> - `npm test -- --grep "metrics"` — tests pass
-> - `tail -1 logs/metrics.log` after bot command — shows JSON entry
+> **Validation**: `npm test -- --grep "metrics"` — tests pass
 
 ### Step 4: Order Tasks & Dependencies
 
@@ -161,21 +142,20 @@ Write under: **## Readiness Declaration**
 
 ### Step 8: Validate Output
 
-1. References point to existing files
+1. References point to existing files (verify with `Read`)
 2. Every task has all 7 fields (Objective, Files, Implementation, Boundaries, Dependencies, Expected Outcome, Validation)
 3. Implementation shows specific changes per file with code examples
 4. Every task traces to the proposed design
 5. No vague outcomes ("improved", "refactored")
 6. Validation has exact commands with expected output
 7. File paths match actual codebase (from Step 2)
+8. **Code detail check**: Interfaces/signatures complete, but function bodies are outlines not implementations
 
 If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/plans/YYYY-MM-DD-<slug>.md` where `<slug>` matches the problem/design documents.
-
-Create `docs/plans/` if it doesn't exist.
+Save to `docs/problems/YYYY-MM-DD-<slug>/plan.md` in the same folder as `definition.md` and `design.md`.
 
 ALWAYS use this exact template:
 
@@ -196,3 +176,11 @@ ALWAYS use this exact template:
 ```
 
 Missing any section invalidates the output.
+
+## Anti-patterns
+
+- ❌ Complete implementations: 50-line function body → ✓ signature + outline
+- ❌ Full test code → ✓ test descriptions with expected assertions
+- ❌ Vague: "Update the function" → ✓ "In `executeTask()` (~line 45), add X"
+- ❌ No context: "Add the function" → ✓ "Add after `cleanupUserStorage` (line 183) in `auth.ts`"
+- ❌ Untraceable: no goal reference → ✓ "Objective: ... (design goal #1)"

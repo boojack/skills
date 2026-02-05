@@ -5,7 +5,7 @@ description: Executes an approved task plan exactly as written, producing code c
 
 # Executing Tasks
 
-Takes a task plan from `docs/plans/` as input. Executes each task exactly as specified, validates results, and records outcomes.
+Takes `plan.md` from `docs/problems/YYYY-MM-DD-<slug>/` as input. Executes each task exactly as specified, validates results, and records outcomes.
 
 Does NOT modify the plan, merge/split/reorder tasks, introduce new tasks, make design decisions, or perform opportunistic refactors. The plan is immutable.
 
@@ -23,7 +23,7 @@ Task Execution Loop:
 
 ### Step 1: Load Plan
 
-Read the task plan from `docs/plans/`.
+Read `plan.md` from the problem folder.
 
 - Verify Readiness Declaration is "Ready for execution"
 - If blocked or requires update, STOP — do not execute
@@ -68,10 +68,18 @@ After each task, record under **## Execution Log**:
 **Status**: Completed | Failed | Skipped
 **Files Changed**: list of files
 **Validation**: `command` — PASS/FAIL
-**Deviations**: None (or describe if any)
+**Deviations**: None | (describe — then STOP, this is a failure)
 ```
 
-Deviations MUST be "None". Any deviation is a failure.
+**Deviations field catches drift, not justifies changes.** Anything other than "None" = failure. STOP and record.
+
+**Example (success):**
+> **Status**: Completed | **Files Changed**: `metrics.ts`, `task_runner.ts` | **Validation**: PASS | **Deviations**: None
+
+**Example (failure):**
+> **Status**: Failed | **Files Changed**: None | **Validation**: Not run
+> **Deviations**: Cannot add to `auth.ts` — has dependencies preventing isolated testing
+> **Blocker for planner**: Move to separate utility file
 
 ### Step 3: Declare Completion
 
@@ -93,14 +101,14 @@ Execution MUST stop if:
 
 On failure:
 - Record the failure in Execution Log
+- Include **Blocker for planner**: what information/change would allow the plan to succeed
 - Do NOT attempt to fix by modifying the plan
 - Do NOT skip the failing task
+- Do NOT rationalize deviations as acceptable ("moved to different file for testability" = failure, not success)
 
 ## Output Format
 
-Save to `docs/executions/YYYY-MM-DD-<slug>.md` where `<slug>` matches the plan.
-
-Create `docs/executions/` if it doesn't exist.
+Save to `docs/problems/YYYY-MM-DD-<slug>/execution.md` in the same folder as `plan.md`.
 
 ALWAYS use this exact template:
 
@@ -113,3 +121,11 @@ ALWAYS use this exact template:
 ```
 
 Missing any section invalidates the output.
+
+## Anti-patterns
+
+- ❌ Rationalizing deviations: "Completed (with deviation)" → ✓ "Failed" + blocker
+- ❌ Fixing plan during execution → ✓ stop, record what prevents following plan
+- ❌ Skipping validation: "obviously correct" → ✓ run exact command, record result
+- ❌ Continuing after failure → ✓ STOP at first failure
+- ❌ Improving beyond scope → ✓ touch only declared files

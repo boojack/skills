@@ -58,9 +58,12 @@ Write a single paragraph under: **## Problem Statement**
 
 Anchor the problem in the real codebase.
 
-- List exact file paths (verify they exist)
+- List exact file paths (use `Glob` or `Read` to verify they exist before including)
+- Include line numbers for specific functions or definitions
 - Note existing abstractions and patterns
 - Describe current behavior, not desired behavior
+
+If the section exceeds 30 lines, summarize patterns and move full enumerations to a reference appendix.
 
 If nothing relevant exists, write: "No existing implementation found."
 
@@ -107,18 +110,21 @@ Write under: **## Open Questions**
 ### Step 6: Validate Output
 
 1. All five sections present and non-empty
-2. Background & Context and Problem Statement contain no solution language
-3. Current State references real files (verify paths exist)
-4. Non-Goals scopes conservatively
+2. Background & Context and Problem Statement contain no solution language:
+   - No "should", "need to", "must implement", "we will"
+   - No specific technologies or patterns proposed as fixes
+   - No "by adding/creating/implementing X" phrases
+3. Current State references real files (verify paths exist with `Glob` or `Read`)
+4. Non-Goals scopes conservatively (when uncertain, mark as non-goal)
 5. Open Questions items each have a default recommendation
 
 If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/problems/YYYY-MM-DD-<slug>.md` where `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`).
+Save to `docs/problems/YYYY-MM-DD-<slug>/definition.md` where `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`).
 
-Create `docs/problems/` if it doesn't exist.
+Create the folder if it doesn't exist.
 
 ALWAYS use this exact template:
 
@@ -135,3 +141,10 @@ ALWAYS use this exact template:
 ```
 
 Missing any section invalidates the output.
+
+## Anti-patterns
+
+- ❌ Solution language: "We need to add X" → ✓ "No X exists"
+- ❌ Scope creep: listing systems not affected → ✓ only code paths exhibiting the problem
+- ❌ Vague non-goals: "Not changing unrelated code" → ✓ specific exclusions
+- ❌ Missing defaults: "Should we log?" → ✓ "Should we log? (default: no)"
