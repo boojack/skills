@@ -90,13 +90,9 @@ Write under: **## Non-Goals**
 
 ### Step 5: Open Questions
 
-Expose uncertainty instead of silently resolving it.
+Expose uncertainty. For each item, provide a default so downstream work can proceed.
 
-List assumptions made due to missing information and questions that must be answered before work begins.
-
-Rules:
-- Do NOT answer the questions or resolve assumptions
-- At least 3 items total
+Format: `Question? (default: answer)`
 
 Write under: **## Open Questions**
 
@@ -104,12 +100,9 @@ Write under: **## Open Questions**
 
 > ## Open Questions
 >
-> **Assumptions:**
-> - "Slow" refers to wall-clock latency, not throughput
->
-> **Questions:**
-> - What is the acceptable latency threshold?
-> - Which specific tasks trigger the confused behavior?
+> - "Slow" refers to latency, not throughput? (default: latency)
+> - Acceptable latency threshold? (default: 100ms)
+> - Which tasks trigger confusion? (default: all multi-step tasks)
 
 ### Step 6: Validate Output
 
@@ -117,7 +110,7 @@ Write under: **## Open Questions**
 2. Background & Context and Problem Statement contain no solution language
 3. Current State references real files (verify paths exist)
 4. Non-Goals scopes conservatively
-5. Open Questions has at least 3 items and does not answer its own questions
+5. Open Questions items each have a default recommendation
 
 If any check fails, return to the failing step and revise.
 
