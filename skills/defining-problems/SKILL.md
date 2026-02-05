@@ -1,9 +1,9 @@
 ---
-name: compiling-problems
-description: Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries. Compiles vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions.
+name: defining-problems
+description: Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries. Converts vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions.
 ---
 
-# Problem Compiler
+# Defining Problems
 
 Pre-research and pre-design gate. Converts vague requests into explicit, grounded, safe-to-work-on problem definitions.
 
@@ -16,7 +16,7 @@ Execute all steps in order. Skipping a step is not allowed.
 Copy this checklist and track progress:
 
 ```
-Problem Compiler Progress:
+Problem Definition Progress:
 - [ ] Step 1: Background & Context
 - [ ] Step 2: Problem Statement
 - [ ] Step 3: Current State
