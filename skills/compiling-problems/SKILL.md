@@ -1,6 +1,6 @@
 ---
 name: compiling-problems
-description: Compiles vague natural-language requests into precise, grounded engineering problem definitions. Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries. Produces structured output with background, problem statement, current state, non-goals, and open questions.
+description: Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries. Compiles vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions.
 ---
 
 # Problem Compiler
@@ -131,4 +131,16 @@ If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Use the template in [templates/output.md](templates/output.md). Missing any section invalidates the output.
+Missing any section invalidates the output.
+
+```markdown
+## Background & Context
+
+## Problem Statement
+
+## Current State
+
+## Non-Goals
+
+## Open Questions
+```
