@@ -53,9 +53,11 @@ No output section. Purpose: ensure tasks reference real paths and patterns.
 Each task MUST use this exact format:
 
 ```
-### T<N>: <short imperative title>
+### T<N>: <short imperative title> [S|M|L]
 
 **Objective**: One outcome, traceable to a design element.
+
+**Size**: S (single file, <30 lines changed) | M (2-3 files, moderate logic) | L (multiple files, complex state/logic)
 
 **Files**:
 - Create: `exact/path/to/new_file.ts`
@@ -88,13 +90,21 @@ Each task MUST use this exact format:
 - ❌ Complete function bodies (executing agent writes these)
 - ❌ Complete test implementations (describe what to test, not full test code)
 
-Write all tasks under: **## Task List**
+**Detail consistency**: All tasks must have the same depth of specificity. If one task shows exact insertion points and decision tables, all tasks must. If a task requires the executing agent to choose between approaches (e.g., "either add new RPC or extend existing endpoint"), the task is underspecified — resolve the choice or flag it in Open Execution Questions.
+
+Start the **## Task List** section with a **Task Index** — one line per task for quick scanning by the executing agent:
+
+> `T1: Add timing instrumentation [S] — T2: Refactor task queue [M] — T3: Add action selector [L]`
+
+Then write each task in full below the index.
 
 **Example:**
 
-> ### T1: Add timing instrumentation to task runner
+> ### T1: Add timing instrumentation to task runner [S]
 >
 > **Objective**: Record latency between command receipt and action initiation (design goal #1).
+>
+> **Size**: S
 >
 > **Files**: Create `src/agent/metrics.ts`, Modify `src/agent/task_runner.ts`, Test `tests/agent/metrics.test.ts`
 >
@@ -143,13 +153,16 @@ Write under: **## Readiness Declaration**
 ### Step 8: Validate Output
 
 1. References point to existing files (verify with `Read`)
-2. Every task has all 7 fields (Objective, Files, Implementation, Boundaries, Dependencies, Expected Outcome, Validation)
-3. Implementation shows specific changes per file with code examples
-4. Every task traces to the proposed design
-5. No vague outcomes ("improved", "refactored")
-6. Validation has exact commands with expected output
-7. File paths match actual codebase (from Step 2)
-8. **Code detail check**: Interfaces/signatures complete, but function bodies are outlines not implementations
+2. Every task has all 8 fields (Objective, Size, Files, Implementation, Boundaries, Dependencies, Expected Outcome, Validation)
+3. Task Index present at top of Task List section
+4. Implementation shows specific changes per file with code examples
+5. Every task traces to the proposed design
+6. No vague outcomes ("improved", "refactored")
+7. Validation has exact commands with expected output
+8. File paths match actual codebase (from Step 2)
+9. **Code detail check**: Interfaces/signatures complete, but function bodies are outlines not implementations
+10. **Detail consistency**: No task is significantly vaguer than others — compare Implementation sections across all tasks
+11. **No embedded design decisions**: If a task says "either X or Y", resolve the choice or move it to Open Execution Questions
 
 If any check fails, return to the failing step and revise.
 
@@ -184,3 +197,5 @@ Missing any section invalidates the output.
 - ❌ Vague: "Update the function" → ✓ "In `executeTask()` (~line 45), add X"
 - ❌ No context: "Add the function" → ✓ "Add after `cleanupUserStorage` (line 183) in `auth.ts`"
 - ❌ Untraceable: no goal reference → ✓ "Objective: ... (design goal #1)"
+- ❌ Embedded design decisions: "Either add new RPC or extend existing" → ✓ pick one, or flag in Open Execution Questions
+- ❌ Inconsistent detail: T1 has exact insertion points, T8 says "add component" → ✓ same depth across all tasks
