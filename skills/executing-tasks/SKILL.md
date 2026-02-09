@@ -1,11 +1,11 @@
 ---
 name: executing-tasks
-description: Executes an approved task plan exactly as written, producing code changes, running validations, and recording completion status for each task. Use when a task plan exists in docs/plans/ with readiness status "Ready for execution" and implementation work should begin.
+description: Executes an approved task plan exactly as written, producing code changes, running validations, and recording completion status for each task. Use when a task plan exists with readiness status "Ready for execution" and implementation work should begin.
 ---
 
 # Executing Tasks
 
-Takes `plan.md` from `docs/problems/YYYY-MM-DD-<slug>/` as input. Executes each task exactly as specified, validates results, and records outcomes.
+Takes `plan.md` from `docs/issues/YYYY-MM-DD-<slug>/` as input. Executes each task exactly as specified, validates results, and records outcomes.
 
 Does NOT modify the plan, merge/split/reorder tasks, introduce new tasks, make design decisions, or perform opportunistic refactors. The plan is immutable.
 
@@ -23,7 +23,7 @@ Task Execution Loop:
 
 ### Step 1: Load Plan
 
-Read `plan.md` from the problem folder.
+Read `plan.md` from the issue folder.
 
 - Verify Readiness Declaration is "Ready for execution"
 - If blocked or requires update, STOP — do not execute
@@ -108,7 +108,7 @@ On failure:
 
 ## Output Format
 
-Save to `docs/problems/YYYY-MM-DD-<slug>/execution.md` in the same folder as `plan.md`.
+Save to `docs/issues/YYYY-MM-DD-<slug>/execution.md` in the same folder as `plan.md`.
 
 ALWAYS use this exact template:
 

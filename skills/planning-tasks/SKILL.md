@@ -5,7 +5,7 @@ description: Translates an approved design document into a concrete, ordered tas
 
 # Planning Tasks
 
-Takes `design.md` and `definition.md` from `docs/problems/YYYY-MM-DD-<slug>/` as input. Produces a task plan detailed enough for a coding agent to execute without re-deriving implementation from the design.
+Takes `design.md` and `definition.md` from `docs/issues/YYYY-MM-DD-<slug>/` as input. Produces a task plan detailed enough for a coding agent to execute without re-deriving implementation from the design.
 
 Does NOT introduce new design decisions, modify the design, or write complete implementations. Output is a task plan with enough detail to execute, not pre-written code to copy.
 
@@ -29,20 +29,20 @@ Task Plan Progress:
 
 ### Step 1: Load Inputs
 
-Read both upstream documents from the problem folder:
+Read both upstream documents from the issue folder:
 
 1. **Design document**: `design.md`
-2. **Problem definition**: `definition.md`
+2. **Issue definition**: `definition.md`
 
 Extract: design goals, non-goals, proposed design, and current state.
 
-Write file paths under: **## Problem Reference** and **## Design Reference**
+Write file paths under: **## Issue Reference** and **## Design Reference**
 
 ### Step 2: Explore Codebase
 
 Before writing tasks, read actual files to ground the plan in reality.
 
-- Read files referenced in problem definition's current state
+- Read files referenced in issue definition's current state
 - Identify patterns, naming conventions, testing style
 - Locate exact insertion points for new code
 
@@ -168,12 +168,12 @@ If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/problems/YYYY-MM-DD-<slug>/plan.md` in the same folder as `definition.md` and `design.md`.
+Save to `docs/issues/YYYY-MM-DD-<slug>/plan.md` in the same folder as `definition.md` and `design.md`.
 
 ALWAYS use this exact template:
 
 ```markdown
-## Problem Reference
+## Issue Reference
 
 ## Design Reference
 

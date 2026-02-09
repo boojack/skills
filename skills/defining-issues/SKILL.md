@@ -1,20 +1,20 @@
 ---
-name: defining-problems
-description: Converts vague natural-language requests into precise, grounded engineering problem definitions with background, problem statement, current state, non-goals, and open questions. Use when a problem needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries.
+name: defining-issues
+description: Converts vague natural-language requests into precise, grounded engineering issue definitions with background, issue statement, current state, non-goals, and open questions. Use when an issue needs to be clarified, scoped, or prepared before research or design work begins — such as unclear requirements, vague feature requests, ambiguous bug reports, or undefined scope boundaries.
 ---
 
-# Defining Problems
+# Defining Issues
 
-Does NOT propose solutions, design systems, or suggest architectures. Output is a problem definition only.
+Does NOT propose solutions, design systems, or suggest architectures. Output is an issue definition only.
 
 ## Workflow
 
 Execute all steps in order. Skipping a step is not allowed.
 
 ```
-Problem Definition Progress:
+Issue Definition Progress:
 - [ ] Step 1: Background & Context
-- [ ] Step 2: Problem Statement
+- [ ] Step 2: Issue Statement
 - [ ] Step 3: Current State
 - [ ] Step 4: Non-Goals
 - [ ] Step 5: Open Questions
@@ -23,7 +23,7 @@ Problem Definition Progress:
 
 ### Step 1: Background & Context
 
-Establish why this problem exists and what motivated the request.
+Establish why this issue exists and what motivated the request.
 
 - Describe the domain, system, or user scenario
 - Include history or prior attempts if known
@@ -38,25 +38,25 @@ Input: "The bot is kinda slow when it tries to do stuff and it gets confused a l
 > ## Background & Context
 > The Minecraft bot uses a task execution pipeline to translate high-level commands into sequences of in-game actions. Users have reported perceived latency between issuing commands and observing bot behavior, as well as instances where the bot selects an incorrect action given the current game state.
 
-### Step 2: Problem Statement
+### Step 2: Issue Statement
 
-Translate the vague request into a precise engineering problem statement.
+Translate the vague request into a precise engineering issue statement.
 
 - Use precise engineering language and codebase terminology
 - Remove subjective or aspirational wording
 - Do NOT add requirements beyond what was stated
 - Do NOT propose solutions
 
-Write a single paragraph under: **## Problem Statement**
+Write a single paragraph under: **## Issue Statement**
 
 **Example:**
 
-> ## Problem Statement
+> ## Issue Statement
 > The bot's task execution pipeline introduces measurable latency between receiving a command and initiating the corresponding action. Additionally, the bot's action selection logic fails to choose the correct behavior when multiple valid actions exist for a given game state.
 
 ### Step 3: Current State
 
-Anchor the problem in the real codebase.
+Anchor the issue in the real codebase.
 
 - List exact file paths (use `Glob` or `Read` to verify they exist before including)
 - Include line numbers for specific functions or definitions
@@ -80,7 +80,7 @@ Prevent scope creep in downstream phases. When in doubt, mark it a non-goal.
 
 - What is explicitly out of scope
 - What parts of the system must NOT be redesigned
-- What adjacent problems are intentionally excluded
+- What adjacent issues are intentionally excluded
 
 Write under: **## Non-Goals**
 
@@ -110,7 +110,7 @@ Write under: **## Open Questions**
 ### Step 6: Validate Output
 
 1. All five sections present and non-empty
-2. Background & Context and Problem Statement contain no solution language:
+2. Background & Context and Issue Statement contain no solution language:
    - No "should", "need to", "must implement", "we will"
    - No specific technologies or patterns proposed as fixes
    - No "by adding/creating/implementing X" phrases
@@ -122,7 +122,7 @@ If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/problems/YYYY-MM-DD-<slug>/definition.md` where `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`).
+Save to `docs/issues/YYYY-MM-DD-<slug>/definition.md` where `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`).
 
 Create the folder if it doesn't exist.
 
@@ -131,7 +131,7 @@ ALWAYS use this exact template:
 ```markdown
 ## Background & Context
 
-## Problem Statement
+## Issue Statement
 
 ## Current State
 
@@ -145,6 +145,6 @@ Missing any section invalidates the output.
 ## Anti-patterns
 
 - ❌ Solution language: "We need to add X" → ✓ "No X exists"
-- ❌ Scope creep: listing systems not affected → ✓ only code paths exhibiting the problem
+- ❌ Scope creep: listing systems not affected → ✓ only code paths exhibiting the issue
 - ❌ Vague non-goals: "Not changing unrelated code" → ✓ specific exclusions
 - ❌ Missing defaults: "Should we log?" → ✓ "Should we log? (default: no)"
