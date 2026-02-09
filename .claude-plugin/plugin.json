@@ -1,0 +1,8 @@
+{
+  "name": "bombcraft",
+  "description": "Curated skill collection. Includes a four-stage engineering pipeline: problem definition, design, task planning, and execution.",
+  "version": "1.0.0",
+  "author": {
+    "name": "boojack"
+  }
+}
