@@ -1,11 +1,11 @@
 {
-  "name": "bombcraft-dev",
+  "name": "hijack",
   "owner": {
     "name": "boojack"
   },
   "plugins": [
     {
-      "name": "bombcraft",
+      "name": "hijack",
       "source": "./",
       "description": "Curated skill collection. Includes a four-stage engineering pipeline: issue definition, design, task planning, and execution."
     }
