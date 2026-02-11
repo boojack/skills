@@ -1,5 +1,6 @@
 {
   "name": "hijack",
   "version": "1.1.5",
-  "description": "Curated skill collection. Includes a four-stage engineering pipeline (issue definition, design, task planning, execution) and Linear sync."
+  "description": "Curated skill collection. Includes a four-stage engineering pipeline (issue definition, design, task planning, execution) and Linear sync.",
+  "contextFileName": "README.md"
 }
