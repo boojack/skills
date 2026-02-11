@@ -57,11 +57,9 @@ Generate title and description from `definition.md`.
 
 **Title**: Under 70 characters. Imperative or noun-phrase style.
 
-**Description**: Condensed summary with exactly three headers — Background, Problem, Impact. Rules:
-- 2-4 lines per section, extract and condense, not verbatim
-- No code references (file paths, line numbers, function names)
-- Plain language readable without codebase context
-- No solution/approach — that belongs in the design document
+**Description**: Three headers — Background (3-5 sentences), Problem (2-4 sentences), Impact (bulleted list). Rules:
+- No hard line breaks within paragraphs — one continuous line per paragraph
+- No code references, no solution/approach, plain language only
 
 **Create or update**: if `issueId` in state, `update_issue`; otherwise `create_issue` and record ID, identifier, URL.
 
@@ -69,10 +67,10 @@ Generate title and description from `definition.md`.
 
 For each artifact that exists locally, sync as a linked document:
 
-| Artifact | Title format | Icon | Source |
-|---|---|---|---|
-| Definition | `Definition: <title>` | 📋 | `definition.md` |
-| Design | `Design: <title>` | 📐 | `design.md` (skip if missing) |
+| Artifact | Title format | Source |
+|---|---|---|
+| Definition | `Full Definition: <title>` | `definition.md` |
+| Design | `Design: <title>` | `design.md` (skip if missing) |
 
 `<title>`: derive from directory slug — replace hyphens with spaces, apply title case. Example: `non-env-database-migration-eligibility` → `Non Env Database Migration Eligibility`.
 
