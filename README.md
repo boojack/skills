@@ -32,13 +32,20 @@ gemini extensions install boojack/skills
 
 ## Skills
 
-| Skill | Purpose |
-|---|---|
-| `defining-issues` | Converts vague requests into precise, grounded engineering issue definitions |
-| `writing-designs` | Researches industry solutions and produces a design document grounded in references |
-| `planning-tasks` | Translates a design into an ordered task plan with exact file paths and validation commands |
-| `executing-tasks` | Executes a task plan exactly as written, running validations and recording outcomes |
-| `syncing-linear` | Syncs issue artifacts to Linear — creates/updates issue, uploads definition and design as linked documents |
+- **`defining-issues`**
+  Converts vague requests into precise, grounded engineering issue definitions
+
+- **`writing-designs`**
+  Researches industry solutions and produces a design document grounded in references
+
+- **`planning-tasks`**
+  Translates a design into an ordered task plan with exact file paths and validation commands
+
+- **`executing-tasks`**
+  Executes a task plan exactly as written, running validations and recording outcomes
+
+- **`syncing-linear`**
+  Syncs issue artifacts to Linear — creates/updates issue, uploads definition and design as linked documents
 
 ## Pipeline
 
