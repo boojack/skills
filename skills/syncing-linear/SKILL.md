@@ -97,13 +97,19 @@ For each artifact that exists locally, sync as a linked document:
 
 | Artifact | Title format | Source |
 |---|---|---|
-| Definition | `Definition: <slug>` | `definition.md` |
-| Design | `Design: <slug>` | `design.md` (skip if missing) |
+| Definition | `Definition: <title>` | `definition.md` |
+| Design | `Design: <title>` | `design.md` (skip if missing) |
+
+`<title>` is derived from the directory slug: replace hyphens with spaces, then apply title case. Example: `non-env-database-migration-eligibility` → `Non Env Database Migration Eligibility`.
 
 - If `documents.<type>` exists in state: call `update_document`
 - Otherwise: call `create_document` with `issue` set to issue identifier. Record returned document ID.
 
-Content is the full file contents. Do NOT create placeholder documents for missing artifacts.
+Content is the full file contents with **local path references replaced**:
+- Replace local paths to sibling artifacts (e.g., `docs/issues/.../definition.md`) with the corresponding Linear document URL from state or from the just-created document.
+- This means **Definition must be synced before Design**, since `design.md` commonly references `definition.md`.
+
+Do NOT create placeholder documents for missing artifacts.
 
 ### Step 5: Finalize
 
