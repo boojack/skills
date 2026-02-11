@@ -10,6 +10,7 @@ Curated skill collection providing a four-stage engineering pipeline.
 | `writing-designs` | Researches industry solutions and produces a design document grounded in references |
 | `planning-tasks` | Translates a design into an ordered task plan with exact file paths and validation commands |
 | `executing-tasks` | Executes a task plan exactly as written, running validations and recording outcomes |
+| `syncing-linear` | Syncs issue artifacts to Linear — creates/updates issue, uploads definition and design as linked documents |
 
 ## Pipeline
 
@@ -18,6 +19,8 @@ Skills form a sequential pipeline. Each stage consumes the artifact from the pre
 ```
 defining-issues → writing-designs → planning-tasks → executing-tasks
 ```
+
+`syncing-linear` is independent — run it after any stage to push current state to Linear.
 
 ### Artifact chain
 
@@ -29,5 +32,6 @@ All artifacts are saved to `docs/issues/YYYY-MM-DD-<slug>/`:
 | writing-designs | `definition.md` | `design.md` |
 | planning-tasks | `definition.md` + `design.md` | `plan.md` |
 | executing-tasks | `plan.md` | `execution.md` |
+| syncing-linear | `definition.md` + `design.md` (optional) | `linear.json` |
 
 Start with `defining-issues` when an issue needs scoping. Progress through each stage in order — do not skip stages.

@@ -1,6 +1,6 @@
 # Hijack
 
-Curated skill collection. Includes a four-stage engineering pipeline: issue definition, design, task planning, and execution.
+Curated skill collection. Includes a four-stage engineering pipeline (issue definition, design, task planning, execution) and Linear sync.
 
 ## Installation
 
@@ -14,12 +14,13 @@ Curated skill collection. Includes a four-stage engineering pipeline: issue defi
 
 ## What's Included
 
-This plugin provides a complete engineering workflow with four specialized skills:
+This plugin provides a complete engineering workflow with four specialized skills and a sync utility:
 
-- **Defining Issues** - Structured problem definition
-- **Writing Designs** - Design documentation and planning
-- **Planning Tasks** - Task breakdown and organization
-- **Executing Tasks** - Guided task execution
+- **Defining Issues** - Converts vague requests into precise engineering issue definitions
+- **Writing Designs** - Researches industry solutions and produces a design document
+- **Planning Tasks** - Translates a design into an ordered task plan with validation commands
+- **Executing Tasks** - Executes a task plan exactly as written, recording outcomes
+- **Syncing Linear** - Syncs issue artifacts to Linear (issue + linked documents)
 
 ## Usage
 
