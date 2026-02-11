@@ -5,7 +5,7 @@ description: Syncs issue artifacts (definition, design) to Linear. Creates or up
 
 # Syncing to Linear
 
-Takes an issue folder from `docs/issues/YYYY-MM-DD-<slug>/` and syncs its artifacts to Linear. Creates a Linear issue from `definition.md` and links full documents for definition and design.
+Syncs `docs/issues/YYYY-MM-DD-<slug>/` artifacts to Linear.
 
 Does NOT modify local files except `linear.json`. Does NOT create or modify definition.md, design.md, or any other issue artifacts.
 
@@ -24,65 +24,52 @@ Linear Sync Progress:
 
 ### Step 1: Locate Issue Directory
 
-Find the target issue directory under `docs/issues/`.
-
-- If an argument is provided, use it
-- If no argument, list directories and ask which one to sync
+- If an argument is provided, use it; otherwise list directories and ask
 - Verify `definition.md` exists — if missing, STOP
 
 ### Step 2: Initialize
 
-**Load state**: read `linear.json` from the issue directory if it exists.
+Read `linear.json` from the issue directory if it exists:
 
 ```json
 {
   "issueId": "uuid",
   "issueIdentifier": "TEAM-123",
-  "issueUrl": "https://linear.app/team/issue/TEAM-123",
+  "issueUrl": "https://linear.app/...",
   "team": "team-name-or-id",
-  "documents": {
-    "definition": "document-id",
-    "design": "document-id"
-  }
+  "documents": { "definition": "doc-id", "design": "doc-id" }
 }
 ```
 
-**Resolve team**: `linear.json` team field → `--team` argument → auto-detect via `list_teams`.
+Resolve team: `linear.json` → `--team` argument → auto-detect via `list_teams`.
 
-**Read artifacts**: `definition.md` (required), `design.md` (optional).
+Read artifacts: `definition.md` (required), `design.md` (optional).
 
 ### Step 3: Sync Issue
 
-Generate title and description from `definition.md`.
+Generate from `definition.md`:
 
-**Title**: Under 70 characters. Imperative or noun-phrase style.
+- **Title**: under 70 characters, imperative or noun-phrase style
+- **Description**: three headers — Background (3-5 sentences), Problem (2-4 sentences), Impact (bulleted list). No hard line breaks within paragraphs. No code references, no solution/approach, plain language only.
 
-**Description**: Three headers — Background (3-5 sentences), Problem (2-4 sentences), Impact (bulleted list). Rules:
-- No hard line breaks within paragraphs — one continuous line per paragraph
-- No code references, no solution/approach, plain language only
-
-**Create or update**: if `issueId` in state, `update_issue`; otherwise `create_issue` and record ID, identifier, URL.
+If `issueId` in state: `update_issue`. Otherwise: `create_issue` and record ID, identifier, URL.
 
 ### Step 4: Sync Documents
-
-For each artifact that exists locally, sync as a linked document:
 
 | Artifact | Title format | Source |
 |---|---|---|
 | Definition | `Full Definition: <title>` | `definition.md` |
 | Design | `Design: <title>` | `design.md` (skip if missing) |
 
-`<title>`: derive from directory slug — replace hyphens with spaces, apply title case. Example: `non-env-database-migration-eligibility` → `Non Env Database Migration Eligibility`.
+`<title>`: slug with hyphens → spaces, title case. Example: `non-env-database-migration-eligibility` → `Non Env Database Migration Eligibility`.
 
-Content is the full file contents. Do not include cross-references between sibling artifacts — the relationship is implicit via the parent issue. Do not create placeholder documents for missing artifacts.
+If `documents.<type>` in state: `update_document`. Otherwise: `create_document` with `issue` set to identifier, record document ID.
 
-If `documents.<type>` in state: `update_document`; otherwise `create_document` with `issue` set to issue identifier. Record document ID.
+No cross-references between sibling artifacts. No placeholder documents.
 
 ### Step 5: Finalize
 
-**Update issue**: regenerate description from Step 3 and append a References section listing synced documents by title. Only include entries for documents actually synced.
-
-**Save state**: write `linear.json` (same schema as Step 2). Only include document keys for documents actually synced.
+Write `linear.json` (same schema as Step 2). Only include document keys for documents actually synced.
 
 ## Output
 
@@ -95,8 +82,8 @@ Synced to Linear:
 
 ## Anti-patterns
 
-- ❌ Copying full definition into description → ✓ condensed plain-language summary
-- ❌ Including file paths in description → ✓ code details stay in linked documents
-- ❌ Creating placeholder documents → ✓ skip missing artifacts
-- ❌ Creating duplicates → ✓ check state for existing IDs, update instead
+- ❌ Full definition in description → ✓ condensed plain-language summary
+- ❌ File paths in description → ✓ code details stay in linked documents
+- ❌ Placeholder documents → ✓ skip missing artifacts
+- ❌ Duplicate issues/documents → ✓ check state, update instead
 - ❌ Modifying definition.md or design.md → ✓ only linear.json is written
