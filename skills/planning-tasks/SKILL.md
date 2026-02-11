@@ -1,6 +1,6 @@
 ---
 name: planning-tasks
-description: Translates an approved design document into a concrete, ordered task plan with exact file paths, implementation details, code examples, and validation commands suitable for direct execution by coding agents. Use when a design document exists in docs/designs/ and executable implementation tasks are needed before coding begins.
+description: Translates an approved design document into a concrete, ordered task plan with exact file paths, implementation details, code examples, and validation commands suitable for direct execution by coding agents. Use when a design document exists in docs/issues/ and executable implementation tasks are needed before coding begins.
 ---
 
 # Planning Tasks
@@ -12,8 +12,6 @@ Does NOT introduce new design decisions, modify the design, or write complete im
 ## Workflow
 
 Execute all steps in order. Skipping a step is not allowed.
-
-Copy this checklist and track progress:
 
 ```
 Task Plan Progress:
@@ -31,16 +29,14 @@ Task Plan Progress:
 
 Read both upstream documents from the issue folder:
 
-1. **Design document**: `design.md`
-2. **Issue definition**: `definition.md`
+1. `design.md`
+2. `definition.md`
 
 Extract: design goals, non-goals, proposed design, and current state.
 
-Write file paths under: **## Issue Reference** and **## Design Reference**
-
 ### Step 2: Explore Codebase
 
-Before writing tasks, read actual files to ground the plan in reality.
+Read actual files to ground the plan in reality.
 
 - Read files referenced in issue definition's current state
 - Identify patterns, naming conventions, testing style
@@ -57,7 +53,7 @@ Each task MUST use this exact format:
 
 **Objective**: One outcome, traceable to a design element.
 
-**Size**: S (single file, <30 lines changed) | M (2-3 files, moderate logic) | L (multiple files, complex state/logic)
+**Size**: S (single file, <30 lines) | M (2-3 files, moderate logic) | L (multiple files, complex state/logic)
 
 **Files**:
 - Create: `exact/path/to/new_file.ts`
@@ -65,12 +61,9 @@ Each task MUST use this exact format:
 - Test: `tests/path/to/test.test.ts`
 
 **Implementation**:
-
 1. In `path/to/file.ts`:
    - Add import X from Y
-   - Add interface (show code)
    - Modify `functionName()` to do Z
-
 2. In `tests/path/to/test.test.ts`:
    - Test: "should X" — assert Y
 
@@ -84,42 +77,16 @@ Each task MUST use this exact format:
 ```
 
 **Code detail guidance:**
-- ✓ Interfaces, type definitions, function signatures (complete — they define contracts)
+- ✓ Interfaces, type definitions, function signatures (they define contracts)
 - ✓ Key logic as pseudocode or commented outline
-- ✓ Import statements and file structure
 - ❌ Complete function bodies (executing agent writes these)
 - ❌ Complete test implementations (describe what to test, not full test code)
 
-**Detail consistency**: All tasks must have the same depth of specificity. If one task shows exact insertion points and decision tables, all tasks must. If a task requires the executing agent to choose between approaches (e.g., "either add new RPC or extend existing endpoint"), the task is underspecified — resolve the choice or flag it in Open Execution Questions.
+**Detail consistency**: All tasks must have the same depth of specificity. If a task requires the executing agent to choose between approaches, the task is underspecified — resolve the choice or flag it in Open Execution Questions.
 
-Start the **## Task List** section with a **Task Index** — one line per task for quick scanning by the executing agent:
+Start **## Task List** with a **Task Index** — one line per task for quick scanning:
 
 > `T1: Add timing instrumentation [S] — T2: Refactor task queue [M] — T3: Add action selector [L]`
-
-Then write each task in full below the index.
-
-**Example:**
-
-> ### T1: Add timing instrumentation to task runner [S]
->
-> **Objective**: Record latency between command receipt and action initiation (design goal #1).
->
-> **Size**: S
->
-> **Files**: Create `src/agent/metrics.ts`, Modify `src/agent/task_runner.ts`, Test `tests/agent/metrics.test.ts`
->
-> **Implementation**:
-> 1. Create `src/agent/metrics.ts`: `MetricsEntry` interface + `recordMetric()` function (appends JSON to logs/metrics.log)
-> 2. Modify `src/agent/task_runner.ts`: In `executeTask()` (~line 45), capture timestamps before/after processing, call `recordMetric()`
-> 3. Tests: "writes entry to metrics.log", "creates logs directory if missing"
->
-> **Boundaries**: Must NOT change task queue logic or add external deps
->
-> **Dependencies**: None
->
-> **Expected Outcome**: Each task execution writes latency JSON to `logs/metrics.log`
->
-> **Validation**: `npm test -- --grep "metrics"` — tests pass
 
 ### Step 4: Order Tasks & Dependencies
 
@@ -152,17 +119,16 @@ Write under: **## Readiness Declaration**
 
 ### Step 8: Validate Output
 
-1. References point to existing files (verify with `Read`)
-2. Every task has all 8 fields (Objective, Size, Files, Implementation, Boundaries, Dependencies, Expected Outcome, Validation)
-3. Task Index present at top of Task List section
-4. Implementation shows specific changes per file with code examples
-5. Every task traces to the proposed design
-6. No vague outcomes ("improved", "refactored")
-7. Validation has exact commands with expected output
-8. File paths match actual codebase (from Step 2)
-9. **Code detail check**: Interfaces/signatures complete, but function bodies are outlines not implementations
-10. **Detail consistency**: No task is significantly vaguer than others — compare Implementation sections across all tasks
-11. **No embedded design decisions**: If a task says "either X or Y", resolve the choice or move it to Open Execution Questions
+1. Every task has all 8 fields (Objective, Size, Files, Implementation, Boundaries, Dependencies, Expected Outcome, Validation)
+2. Task Index present at top of Task List
+3. Implementation shows specific changes per file with code examples
+4. Every task traces to the proposed design
+5. No vague outcomes ("improved", "refactored")
+6. Validation has exact commands with expected output
+7. File paths match actual codebase (from Step 2)
+8. Interfaces/signatures complete, function bodies are outlines not implementations
+9. No task is significantly vaguer than others
+10. No embedded design decisions — if "either X or Y", resolve or move to Open Execution Questions
 
 If any check fails, return to the failing step and revise.
 
@@ -170,13 +136,9 @@ If any check fails, return to the failing step and revise.
 
 Save to `docs/issues/YYYY-MM-DD-<slug>/plan.md` in the same folder as `definition.md` and `design.md`.
 
-ALWAYS use this exact template:
+Template:
 
 ```markdown
-## Issue Reference
-
-## Design Reference
-
 ## Task List
 
 ## Task Ordering Rationale
@@ -195,7 +157,6 @@ Missing any section invalidates the output.
 - ❌ Complete implementations: 50-line function body → ✓ signature + outline
 - ❌ Full test code → ✓ test descriptions with expected assertions
 - ❌ Vague: "Update the function" → ✓ "In `executeTask()` (~line 45), add X"
-- ❌ No context: "Add the function" → ✓ "Add after `cleanupUserStorage` (line 183) in `auth.ts`"
 - ❌ Untraceable: no goal reference → ✓ "Objective: ... (design goal #1)"
 - ❌ Embedded design decisions: "Either add new RPC or extend existing" → ✓ pick one, or flag in Open Execution Questions
 - ❌ Inconsistent detail: T1 has exact insertion points, T8 says "add component" → ✓ same depth across all tasks

@@ -11,7 +11,7 @@ Does NOT modify the plan, merge/split/reorder tasks, introduce new tasks, make d
 
 ## Workflow
 
-Execute tasks one at a time in plan order. For each task:
+Execute tasks one at a time in plan order.
 
 ```
 Task Execution Loop:
@@ -26,9 +26,7 @@ Task Execution Loop:
 Read `plan.md` from the issue folder.
 
 - Verify Readiness Declaration is "Ready for execution"
-- If blocked or requires update, STOP — do not execute
-
-Write the file path under: **## Plan Reference**
+- If blocked or requires update, STOP
 
 ### Step 2: Execute Tasks
 
@@ -37,16 +35,12 @@ For each task in order:
 #### 2a. Confirm
 
 Before executing, restate:
-- Task ID and objective
-- Files in scope
-- Boundaries (what NOT to do)
-- Dependencies satisfied? (yes/no)
-
-If dependencies not satisfied, STOP.
+- Task ID, objective, files in scope, boundaries
+- Dependencies satisfied? (yes/no — if no, STOP)
 
 #### 2b. Execute
 
-- Perform only the actions in the Implementation section
+- Perform only actions in the Implementation section
 - Touch only files declared in Files section
 - Follow existing code conventions
 - Do NOT "improve" beyond task scope
@@ -55,8 +49,8 @@ If dependencies not satisfied, STOP.
 
 Run the exact validation commands from the task.
 
-- If validation passes, proceed to record
-- If validation fails, STOP — record failure, do not attempt fixes
+- Pass → proceed to record
+- Fail → STOP, record failure, do not attempt fixes
 
 #### 2d. Record
 
@@ -71,22 +65,14 @@ After each task, record under **## Execution Log**:
 **Deviations**: None | (describe — then STOP, this is a failure)
 ```
 
-**Deviations field catches drift, not justifies changes.** Anything other than "None" = failure. STOP and record.
-
-**Example (success):**
-> **Status**: Completed | **Files Changed**: `metrics.ts`, `task_runner.ts` | **Validation**: PASS | **Deviations**: None
-
-**Example (failure):**
-> **Status**: Failed | **Files Changed**: None | **Validation**: Not run
-> **Deviations**: Cannot add to `auth.ts` — has dependencies preventing isolated testing
-> **Blocker for planner**: Move to separate utility file
+Anything other than "None" in Deviations = failure. STOP and record.
 
 ### Step 3: Declare Completion
 
 After all tasks (or on failure), declare exactly one:
 
 - **All tasks completed successfully**
-- **Execution halted at T<N> due to failure** — describe what failed
+- **Execution halted at T\<N\> due to failure** — describe what failed
 - **Execution blocked pending clarification** — describe what's needed
 
 Write under: **## Completion Declaration**
@@ -101,20 +87,16 @@ Execution MUST stop if:
 
 On failure:
 - Record the failure in Execution Log
-- Include **Blocker for planner**: what information/change would allow the plan to succeed
-- Do NOT attempt to fix by modifying the plan
-- Do NOT skip the failing task
-- Do NOT rationalize deviations as acceptable ("moved to different file for testability" = failure, not success)
+- Include **Blocker for planner**: what change would allow the plan to succeed
+- Do NOT fix by modifying the plan, skip the task, or rationalize deviations
 
 ## Output Format
 
 Save to `docs/issues/YYYY-MM-DD-<slug>/execution.md` in the same folder as `plan.md`.
 
-ALWAYS use this exact template:
+Template:
 
 ```markdown
-## Plan Reference
-
 ## Execution Log
 
 ## Completion Declaration

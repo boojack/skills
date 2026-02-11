@@ -27,52 +27,31 @@ Establish why this issue exists and what motivated the request.
 
 - Describe the domain, system, or user scenario
 - Include history or prior attempts if known
-- Keep factual — do NOT editorialize or advocate for a solution
+- Keep factual — no editorializing or solution advocacy
 
 Write under: **## Background & Context**
 
-**Example:**
-
-Input: "The bot is kinda slow when it tries to do stuff and it gets confused a lot"
-
-> ## Background & Context
-> The Minecraft bot uses a task execution pipeline to translate high-level commands into sequences of in-game actions. Users have reported perceived latency between issuing commands and observing bot behavior, as well as instances where the bot selects an incorrect action given the current game state.
-
 ### Step 2: Issue Statement
 
-Translate the vague request into a precise engineering issue statement.
+Translate the vague request into a precise engineering problem statement.
 
 - Use precise engineering language and codebase terminology
-- Remove subjective or aspirational wording
-- Do NOT add requirements beyond what was stated
-- Do NOT propose solutions
+- No subjective, aspirational, or solution-proposing language
+- Single paragraph
 
-Write a single paragraph under: **## Issue Statement**
-
-**Example:**
-
-> ## Issue Statement
-> The bot's task execution pipeline introduces measurable latency between receiving a command and initiating the corresponding action. Additionally, the bot's action selection logic fails to choose the correct behavior when multiple valid actions exist for a given game state.
+Write under: **## Issue Statement**
 
 ### Step 3: Current State
 
 Anchor the issue in the real codebase.
 
-- List exact file paths (use `Glob` or `Read` to verify they exist before including)
+- List exact file paths (verify with `Glob` or `Read`)
 - Include line numbers for specific functions or definitions
-- Note existing abstractions and patterns
 - Describe current behavior, not desired behavior
-
-If the section exceeds 30 lines, summarize patterns and move full enumerations to a reference appendix.
-
-If nothing relevant exists, write: "No existing implementation found."
+- If section exceeds 30 lines, summarize and move details to a reference appendix
+- If nothing relevant exists: "No existing implementation found."
 
 Write under: **## Current State**
-
-**Example:**
-
-> ## Current State
-> Task execution is handled in `src/agent/task_runner.ts`, which processes commands sequentially through a queue. Action selection uses a rule-based system in `src/agent/actions/` with one file per action type.
 
 ### Step 4: Non-Goals
 
@@ -84,49 +63,29 @@ Prevent scope creep in downstream phases. When in doubt, mark it a non-goal.
 
 Write under: **## Non-Goals**
 
-**Example:**
-
-> ## Non-Goals
-> - Redesigning the action system architecture
-> - Adding new action types
-> - Optimizing network latency between bot and game server
-
 ### Step 5: Open Questions
 
-Expose uncertainty. For each item, provide a default so downstream work can proceed.
+Expose uncertainty. Each item must include a default so downstream work can proceed.
 
 Format: `Question? (default: answer)`
 
 Write under: **## Open Questions**
 
-**Example:**
-
-> ## Open Questions
->
-> - "Slow" refers to latency, not throughput? (default: latency)
-> - Acceptable latency threshold? (default: 100ms)
-> - Which tasks trigger confusion? (default: all multi-step tasks)
-
 ### Step 6: Validate Output
 
 1. All five sections present and non-empty
-2. Background & Context and Issue Statement contain no solution language:
-   - No "should", "need to", "must implement", "we will"
-   - No specific technologies or patterns proposed as fixes
-   - No "by adding/creating/implementing X" phrases
-3. Current State references real files (verify paths exist with `Glob` or `Read`)
-4. Non-Goals scopes conservatively (when uncertain, mark as non-goal)
-5. Open Questions items each have a default recommendation
+2. Background & Issue Statement contain no solution language ("should", "need to", "must implement", "by adding/creating X")
+3. Current State references real files (verified with `Glob` or `Read`)
+4. Non-Goals scopes conservatively
+5. Open Questions each have a default
 
 If any check fails, return to the failing step and revise.
 
 ## Output Format
 
-Save to `docs/issues/YYYY-MM-DD-<slug>/definition.md` where `<slug>` is a short kebab-case summary (e.g., `task-execution-latency`).
+Save to `docs/issues/YYYY-MM-DD-<slug>/definition.md` where `<slug>` is a short kebab-case summary. Create the folder if it doesn't exist.
 
-Create the folder if it doesn't exist.
-
-ALWAYS use this exact template:
+Template:
 
 ```markdown
 ## Background & Context
