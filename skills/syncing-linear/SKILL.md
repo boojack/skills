@@ -52,19 +52,19 @@ Generate from `definition.md`:
 
 ```markdown
 ## Problem
-**Tasks execute against stale database snapshots without detecting that the target has changed since task creation.**
+**Webhook payloads are delivered without signature verification, allowing any network peer to forge event notifications.**
 
-When the target database's project or environment is reassigned after task creation, the task silently proceeds under the wrong scope. Deleted databases produce generic crash errors instead of actionable messages.
+Consumers have no way to distinguish legitimate platform events from spoofed requests. Replay attacks are also possible since payloads carry no timestamp or nonce.
 
 ## Impact
-- **Wrong authorization scope** — tasks run under a different project than originally approved
-- **Policy bypass** — approval policies evaluated at plan time no longer reflect current environment
-- **Broken audit trail** — changes recorded against wrong project or environment
+- **Forged deployments** — attackers can trigger production deploys by sending crafted webhook events
+- **Data poisoning** — pipeline consumers ingest unverified payloads as trusted input
+- **Silent failures** — no logging or alerting when signature validation is absent
 
 >>> Background
-Bytebase orchestrates database changes through a Plan, Task, and TaskRun pipeline. At task creation, database properties (instance, name, environment) are snapshotted onto the task record. These snapshots are static, but the database itself is mutable — its project can be reassigned, its environment can change, and it can be soft-deleted.
+The platform dispatches webhook events to registered consumer endpoints on state changes (deploy, build, rollback). Consumers receive a JSON payload over HTTPS but the request includes no HMAC signature header. Without a shared secret and signature check, consumers cannot authenticate the sender.
 
-At execution time, task executors re-fetch the database and use current properties without comparing against stored snapshots. No reconciliation step exists between planning and execution phases.
+Most webhook providers (GitHub, Stripe, Slack) sign payloads with HMAC-SHA256 and include the signature in a header. This project currently skips that step entirely.
 >>>
 ```
 
