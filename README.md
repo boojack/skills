@@ -4,25 +4,24 @@ Curated skill collection providing a four-stage engineering pipeline and Linear 
 
 ## Install
 
+Works with Claude Code, Gemini CLI, Cursor, Copilot, and [40+ agents](https://skills.sh/).
+
 ```bash
 npx skills add boojack/skills
 ```
 
 <details>
-<summary>Claude Code</summary>
+<summary>Alternative: Claude Code plugin marketplace</summary>
 
 ```bash
-# Add marketplace
 /plugin marketplace add boojack/skills
-
-# Install plugin
 /plugin install hijack@hijack
 ```
 
 </details>
 
 <details>
-<summary>Gemini CLI</summary>
+<summary>Alternative: Gemini CLI extensions</summary>
 
 ```bash
 gemini extensions install boojack/skills
