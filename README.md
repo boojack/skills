@@ -1,6 +1,24 @@
-# Hijack
+# Skills
 
-Curated skill collection providing a four-stage engineering pipeline and Linear sync.
+Turn vague words into shipping code — through definition, design, planning, and execution.
+
+## Define before you design
+
+"Make the API faster." "Add dark mode." — Users describe intent, not implementation. The gap between what a user says and what an agent needs to know is context: which files, which functions, what exists today, what's out of scope.
+
+`defining-issues` bridges that gap. It scans the codebase, locates the relevant code paths, documents current behavior, and produces a `definition.md` — the single source of truth that every downstream stage builds on.
+
+```
+User: "add dark mode"
+                ↓
+definition.md:
+  - Background:     React app using styled-components, no theme system
+  - Current state:  src/styles/global.ts exports hardcoded color tokens
+  - Non-goals:      system preference detection, per-component overrides
+  - Open questions:  persist preference? (default: localStorage)
+```
+
+Design, planning, and execution all read from this artifact. The precision comes from the definition — not from the user having to spell it out.
 
 ## Install
 
@@ -8,64 +26,49 @@ Works with Claude Code, Gemini CLI, Cursor, Copilot, and [40+ agents](https://sk
 
 ```bash
 npx skills add boojack/skills
+
+# update to latest
+npx skills update boojack/skills
 ```
 
-<details>
-<summary>Alternative: Claude Code plugin marketplace</summary>
+## How it works
 
-```bash
-/plugin marketplace add boojack/skills
-/plugin install hijack@hijack
-```
+Four stages, each with one job and one hard constraint. The constraint is what makes the output trustworthy — and what separates this from "just asking the agent to build it."
 
-</details>
+All artifacts are saved to `docs/issues/YYYY-MM-DD-<slug>/`. Review and annotate each artifact before moving to the next stage.
 
-<details>
-<summary>Alternative: Gemini CLI extensions</summary>
+### `defining-issues` → `definition.md`
 
-```bash
-gemini extensions install boojack/skills
-```
+> No solution language — define the problem, not the fix.
 
-</details>
+Converts a vague request into a grounded issue definition. Explores the codebase to find real file paths and current behavior. Produces background, issue statement, current state, non-goals, and open questions with defaults.
 
-## Skills
+This is the most important stage. Everything downstream inherits the context gathered here. A weak definition means design researches the wrong problem, planning targets imaginary files, and execution writes code that doesn't fit.
 
-- **`defining-issues`**
-  Converts vague requests into precise, grounded engineering issue definitions
+### `writing-designs` → `design.md`
 
-- **`writing-designs`**
-  Researches industry solutions and produces a design document grounded in references
+> No design decision without a cited reference.
 
-- **`planning-tasks`**
-  Translates a design into an ordered task plan with exact file paths and validation commands
+Takes `definition.md` and researches how the industry solves the defined problem — engineering blogs, open-source implementations, technical articles. Produces an industry baseline, research summary, and proposed design where every decision traces to a goal and cites a source.
 
-- **`executing-tasks`**
-  Executes a task plan exactly as written, running validations and recording outcomes
+Prevents the agent from inventing solutions. If a pattern isn't backed by real-world usage, it doesn't belong in the design.
 
-- **`syncing-linear`**
-  Syncs issue artifacts to Linear — creates/updates issue, uploads definition and design as linked documents
+### `planning-tasks` → `plan.md`
 
-## Pipeline
+> Every task must have exact file paths, implementation outline, and validation command.
 
-Skills form a sequential pipeline. Each stage consumes the artifact from the previous stage:
+Takes `definition.md` + `design.md` and breaks the design into ordered tasks. Each task declares which files to create or modify, what the implementation looks like (signatures and outlines, not full code), boundaries, dependencies, expected outcomes, and how to validate.
 
-```
-defining-issues → writing-designs → planning-tasks → executing-tasks
-```
+Resolves every ambiguity before execution begins. If the executing agent would need to make a judgment call, the plan isn't ready.
 
-`syncing-linear` is independent — run it after any stage to push current state to Linear.
+### `executing-tasks` → `execution.md`
 
-### Artifact chain
+> The plan is immutable — stop on any deviation.
 
-All artifacts are saved to `docs/issues/YYYY-MM-DD-<slug>/`:
+Takes `plan.md` and implements each task exactly as written. Runs validation commands, records pass/fail. If anything deviates from the plan — a file doesn't exist, a test fails, a boundary would be crossed — execution stops and records a blocker for the planner.
 
-| Stage | Input | Output |
-|---|---|---|
-| defining-issues | User request | `definition.md` |
-| writing-designs | `definition.md` | `design.md` |
-| planning-tasks | `definition.md` + `design.md` | `plan.md` |
-| executing-tasks | `plan.md` | `execution.md` |
-| syncing-linear | `definition.md` + `design.md` (optional) | `linear.json` |
+No improvisation, no "quick fixes while I'm here," no reordering. The plan either works as written or it goes back for revision.
 
-Start with `defining-issues` when an issue needs scoping. Progress through each stage in order.
+### `syncing-linear`
+
+Runs independently after any stage. Creates or updates a Linear issue with a summarized title and structured description, and uploads the current definition and design as linked documents.
