@@ -1,11 +1,19 @@
 ---
 name: syncing-linear
-description: Syncs issue artifacts (definition, design) to Linear. Creates or updates a Linear issue with a summarized title and structured description, and uploads full definition and design as linked documents. Use after any issue pipeline stage to push current state to Linear.
+description: >
+  Syncs issue artifacts (definition, design, plan, execution) to Linear. Creates
+  or updates a Linear issue with a summarized title and structured description,
+  and uploads full artifacts as linked documents. Use after any pipeline stage to
+  push current state to Linear. Also triggers on: "sync to linear", "push to
+  linear", "create linear issue", "update the ticket", "track this in linear".
+  Reads artifacts produced by defining-issues and executing-tasks.
 ---
 
 # Syncing to Linear
 
-Takes `definition.md` and `design.md` (optional) from `docs/issues/YYYY-MM-DD-<slug>/` as input. Syncs to Linear as an issue with linked documents.
+Takes artifacts from `docs/issues/YYYY-MM-DD-<slug>/` as input. Syncs to Linear as an issue with linked documents.
+
+Supported artifacts: `definition.md` (required), `design.md`, `plan.md`, `execution.md` (all optional).
 
 Does NOT modify local files except `linear.json`.
 
@@ -29,7 +37,7 @@ If an argument is provided, use it; otherwise list directories and ask. Verify `
 
 ### Step 2: Initialize
 
-Read `linear.json` if it exists. Resolve team: `linear.json` → `--team` argument → auto-detect via `linear-server:list_teams`. Read artifacts: `definition.md` (required), `design.md` (optional).
+Read `linear.json` if it exists. Resolve team: `linear.json` → `--team` argument → auto-detect via `linear-server:list_teams`. Read artifacts: `definition.md` (required), `design.md`, `plan.md`, `execution.md` (all optional).
 
 ### Step 3: Sync Issue
 
@@ -69,6 +77,8 @@ If `issueId` in state: `update_issue`. Otherwise: `create_issue` and record ID, 
 |---|---|---|
 | Definition | `Full Definition: <title>` | `definition.md` |
 | Design | `Design: <title>` | `design.md` (skip if missing) |
+| Plan | `Plan: <title>` | `plan.md` (skip if missing) |
+| Execution | `Execution: <title>` | `execution.md` (skip if missing) |
 
 `<title>`: slug → spaces → title case.
 
@@ -88,7 +98,7 @@ Write `linear.json` and print console summary.
   "issueIdentifier": "TEAM-123",
   "issueUrl": "https://linear.app/...",
   "team": "team-name-or-id",
-  "documents": { "definition": "doc-id", "design": "doc-id" }
+  "documents": { "definition": "doc-id", "design": "doc-id", "plan": "doc-id", "execution": "doc-id" }
 }
 ```
 
@@ -97,6 +107,8 @@ Synced to Linear:
 - Issue: TEAM-123 — <title> (<url>)
 - Definition document: created | updated
 - Design document: created | updated | skipped (not found)
+- Plan document: created | updated | skipped (not found)
+- Execution document: created | updated | skipped (not found)
 ```
 
 ## Anti-patterns
@@ -106,3 +118,8 @@ Synced to Linear:
 - ❌ Placeholder documents → ✓ skip missing artifacts
 - ❌ Duplicate issues/documents → ✓ check state, update instead
 - ❌ Modifying definition.md or design.md → ✓ only linear.json is written
+
+## Related Skills
+
+- `defining-issues` — produces definition.md and design.md
+- `executing-tasks` — produces plan.md and execution.md

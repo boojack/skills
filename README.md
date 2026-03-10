@@ -1,12 +1,12 @@
 # Skills
 
-Turn vague words into shipping code — through definition, design, planning, and execution.
+Turn vague words into shipping code — through definition, design, and execution.
 
-## Define before you design
+## Define before you build
 
 "Make the API faster." "Add dark mode." — Users describe intent, not implementation. The gap between what's said and what an agent needs is context: which files, which functions, what exists today, what's out of scope.
 
-`defining-issues` bridges that gap. It scans the codebase, documents current behavior, and produces a `definition.md` — the single source of truth every downstream stage builds on.
+`defining-issues` bridges that gap. It scans the codebase, documents current behavior, and produces a `definition.md` — the single source of truth that execution builds on.
 
 ```
 User: "add dark mode"
@@ -15,7 +15,8 @@ definition.md:
   - Background:     React app using styled-components, no theme system
   - Current state:  src/styles/global.ts exports hardcoded color tokens
   - Non-goals:      system preference detection, per-component overrides
-  - Open questions:  persist preference? (default: localStorage)
+  - Open questions: persist preference? (default: localStorage)
+  - Scope:          M — extends existing styled-components pattern
 ```
 
 The precision comes from the definition — not from the user having to spell it out.
@@ -33,46 +34,26 @@ npx skills update boojack/skills
 
 ## How it works
 
-Four stages, each with one job and one hard constraint. The constraint makes the output trustworthy — and separates this from "just asking the agent to build it."
+Two stages. Define the problem, then build the solution.
 
-All artifacts save to `docs/issues/YYYY-MM-DD-<slug>/`. Review each before moving on.
-
-### `defining-issues` → `definition.md`
+### `defining-issues` → `definition.md` + `design.md`
 
 > No solution language — define the problem, not the fix.
 
-Explores the codebase and converts a vague request into a grounded definition — real file paths, current behavior, non-goals, and open questions with defaults.
+Explores the codebase and converts a vague request into a grounded definition — real file paths, current behavior, non-goals, open questions with defaults, and a scope assessment (S/M/L).
 
-The most important stage. A weak definition means design researches the wrong problem, planning targets imaginary files, and execution writes code that doesn't fit.
+For L-scope tasks (new subsystems, novel problems), the skill continues into a research and design phase — collecting industry references and producing a `design.md` grounded in cited sources. S/M tasks skip design entirely.
 
-### `writing-designs` → `design.md`
+### `executing-tasks` → `plan.md` + `execution.md`
 
-> No design decision without a cited reference.
+> Plan it, then build it — stop on semantic deviations.
 
-Takes `definition.md` and researches how the industry solves the problem — engineering blogs, open-source implementations, technical articles. Every decision traces to a goal and cites a source.
-
-If a pattern isn't backed by real-world usage, it doesn't belong in the design.
-
-### `planning-tasks` → `plan.md`
-
-> Every task must have exact file paths, implementation outline, and validation command.
-
-Breaks the design into ordered tasks. Each declares files to modify, implementation outline, boundaries, dependencies, and how to validate.
-
-If the executing agent would need to make a judgment call, the plan isn't ready.
-
-### `executing-tasks` → `execution.md`
-
-> The plan is immutable — stop on any deviation.
-
-Implements each task exactly as written. Runs validations, records pass/fail. If anything deviates — execution stops and records a blocker.
-
-The plan either works as written or it goes back for revision.
+Takes the definition (and design, if present), breaks it into ordered tasks, presents the plan for review, then executes each task with validation. Minor path corrections (renames, shifted line numbers) are noted and continued. Semantic deviations stop execution and record a blocker.
 
 ### `syncing-linear`
 
 > The most important output isn't code — it's the artifacts.
 
-Runs independently after any stage. Creates or updates a Linear issue with a condensed summary and uploads artifacts as linked documents.
+Runs independently after either stage. Creates or updates a Linear issue with a condensed summary and uploads all artifacts as linked documents.
 
-Agent conversations are means, not ends: the session closes, the context disappears, but the artifacts remain. Every issue needs a center — `syncing-linear` makes Linear that source of truth, **one place to define, plan, review, and monitor.**
+All artifacts save to `docs/issues/YYYY-MM-DD-<slug>/`.
