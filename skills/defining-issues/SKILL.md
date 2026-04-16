@@ -83,7 +83,7 @@ If any check fails, return to the failing step and revise.
 
 ### Save Definition
 
-Save to `docs/issues/YYYY-MM-DD-<slug>/definition.md`:
+Save to `docs/plans/YYYY-MM-DD-<slug>/definition.md`:
 
 ```markdown
 ## Background & Context
@@ -166,7 +166,7 @@ If any check fails, return to the failing step and revise.
 
 ### Save Design
 
-Save to `docs/issues/YYYY-MM-DD-<slug>/design.md`:
+Save to `docs/plans/YYYY-MM-DD-<slug>/design.md`:
 
 ```markdown
 ## References

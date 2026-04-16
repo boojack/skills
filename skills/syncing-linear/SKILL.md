@@ -11,7 +11,7 @@ description: >
 
 # Syncing to Linear
 
-Takes artifacts from `docs/issues/YYYY-MM-DD-<slug>/` as input. Syncs to Linear as an issue with linked documents.
+Takes artifacts from `docs/plans/YYYY-MM-DD-<slug>/` as input. Syncs to Linear as an issue with linked documents.
 
 Supported artifacts: `definition.md` (required), `design.md`, `plan.md`, `execution.md` (all optional).
 

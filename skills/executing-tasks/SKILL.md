@@ -3,7 +3,7 @@ name: executing-tasks
 description: >
   Plans and executes implementation from a defined issue. Reads definition.md
   (and design.md if present), breaks work into tasks, then executes each task
-  with validation. Use when a definition exists in docs/issues/ and
+  with validation. Use when a definition exists in docs/plans/ and
   implementation work should begin. Also triggers on: "build it", "implement
   this", "execute the plan", "start implementing", "do the work", "plan and
   execute", "break this into tasks and build it".
@@ -13,7 +13,7 @@ description: >
 
 # Executing Tasks
 
-Takes `definition.md` (required) and `design.md` (optional, required for L-scope) from `docs/issues/YYYY-MM-DD-<slug>/` as input. Plans tasks, then executes each one with validation.
+Takes `definition.md` (required) and `design.md` (optional, required for L-scope) from `docs/plans/YYYY-MM-DD-<slug>/` as input. Plans tasks, then executes each one with validation.
 
 Does NOT make design decisions, skip validation, or perform opportunistic refactors.
 
@@ -138,7 +138,7 @@ Exactly one:
 
 ## Output
 
-Save to `docs/issues/YYYY-MM-DD-<slug>/plan.md` (after Step 4) and `docs/issues/YYYY-MM-DD-<slug>/execution.md` (after Step 6).
+Save to `docs/plans/YYYY-MM-DD-<slug>/plan.md` (after Step 4) and `docs/plans/YYYY-MM-DD-<slug>/execution.md` (after Step 6).
 
 **plan.md:**
 ```markdown

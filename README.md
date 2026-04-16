@@ -56,4 +56,4 @@ Takes the definition (and design, if present), breaks it into ordered tasks, pre
 
 Runs independently after either stage. Creates or updates a Linear issue with a condensed summary and uploads all artifacts as linked documents.
 
-All artifacts save to `docs/issues/YYYY-MM-DD-<slug>/`.
+All artifacts save to `docs/plans/YYYY-MM-DD-<slug>/`.
