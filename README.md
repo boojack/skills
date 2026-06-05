@@ -1,59 +1,37 @@
 # Skills
 
-Turn vague words into shipping code — through definition, design, and execution.
-
-## Define before you build
-
-"Make the API faster." "Add dark mode." — Users describe intent, not implementation. The gap between what's said and what an agent needs is context: which files, which functions, what exists today, what's out of scope.
-
-`defining-issues` bridges that gap. It scans the codebase, documents current behavior, and produces a `definition.md` — the single source of truth that execution builds on.
-
-```
-User: "add dark mode"
-                ↓
-definition.md:
-  - Background:     React app using styled-components, no theme system
-  - Current state:  src/styles/global.ts exports hardcoded color tokens
-  - Non-goals:      system preference detection, per-component overrides
-  - Open questions: persist preference? (default: localStorage)
-  - Scope:          M — extends existing styled-components pattern
-```
-
-The precision comes from the definition — not from the user having to spell it out.
+Reusable agent skills for defining, planning, and executing engineering work.
 
 ## Install
 
-Works with Claude Code, Gemini CLI, Cursor, Copilot, and [40+ agents](https://skills.sh/).
-
 ```bash
 npx skills add boojack/skills
+```
 
-# update to latest
+Update to the latest version:
+
+```bash
 npx skills update boojack/skills
 ```
 
-## How it works
+## Current Skills
 
-Two stages. Define the problem, then build the solution.
+### `defining-issues`
 
-### `defining-issues` → `definition.md` + `design.md`
+Use when a vague request needs to become a grounded issue definition before implementation.
 
-> No solution language — define the problem, not the fix.
+Produces:
+- `docs/plans/YYYY-MM-DD-<slug>/definition.md`
+- `docs/plans/YYYY-MM-DD-<slug>/design.md` for L-scope tasks
 
-Explores the codebase and converts a vague request into a grounded definition — real file paths, current behavior, non-goals, open questions with defaults, and a scope assessment (S/M/L).
+### `executing-tasks`
 
-For L-scope tasks (new subsystems, novel problems), the skill continues into a research and design phase — collecting industry references and producing a `design.md` grounded in cited sources. S/M tasks skip design entirely.
+Use when a defined issue is ready to be planned and implemented.
 
-### `executing-tasks` → `plan.md` + `execution.md`
+Uses:
+- `definition.md`
+- `design.md` for L-scope tasks
 
-> Plan it, then build it — stop on semantic deviations.
-
-Takes the definition (and design, if present), breaks it into ordered tasks, presents the plan for review, then executes each task with validation. Minor path corrections (renames, shifted line numbers) are noted and continued. Semantic deviations stop execution and record a blocker.
-
-### `syncing-linear`
-
-> The most important output isn't code — it's the artifacts.
-
-Runs independently after either stage. Creates or updates a Linear issue with a condensed summary and uploads all artifacts as linked documents.
-
-All artifacts save to `docs/plans/YYYY-MM-DD-<slug>/`.
+Produces:
+- `docs/plans/YYYY-MM-DD-<slug>/plan.md`
+- `docs/plans/YYYY-MM-DD-<slug>/execution.md`

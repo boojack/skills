@@ -221,4 +221,3 @@ If you catch yourself thinking:
 ## Related Skills
 
 - `executing-tasks` — next stage: plans and executes tasks from definition/design
-- `syncing-linear` — push artifacts to Linear at any point

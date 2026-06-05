@@ -8,7 +8,7 @@ description: >
   this", "execute the plan", "start implementing", "do the work", "plan and
   execute", "break this into tasks and build it".
   Requires definition.md from defining-issues. For L-scope, also requires
-  design.md. For syncing results to Linear, see syncing-linear.
+  design.md.
 ---
 
 # Executing Tasks
@@ -185,4 +185,3 @@ If you catch yourself thinking:
 ## Related Skills
 
 - `defining-issues` — prerequisite: produces definition.md and design.md
-- `syncing-linear` — push execution results to Linear after completion
