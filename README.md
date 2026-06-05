@@ -1,6 +1,6 @@
 # Skills
 
-Reusable agent skills for defining, planning, and executing engineering work.
+Reusable agent skills for turning rough engineering ideas into concise, standard design docs.
 
 ## Install
 
@@ -16,22 +16,9 @@ npx skills update boojack/skills
 
 ## Current Skills
 
-### `defining-issues`
+### `writing-design-docs`
 
-Use when a vague request needs to become a grounded issue definition before implementation.
-
-Produces:
-- `docs/plans/YYYY-MM-DD-<slug>/definition.md`
-- `docs/plans/YYYY-MM-DD-<slug>/design.md` for L-scope tasks
-
-### `executing-tasks`
-
-Use when a defined issue is ready to be planned and implemented.
-
-Uses:
-- `definition.md`
-- `design.md` for L-scope tasks
+Use when a rough idea, vague request, defined issue, RFC, or technical proposal needs to become a clear design doc.
 
 Produces:
-- `docs/plans/YYYY-MM-DD-<slug>/plan.md`
-- `docs/plans/YYYY-MM-DD-<slug>/execution.md`
+- `docs/design-docs/YYYY-MM-DD-<slug>.md`
