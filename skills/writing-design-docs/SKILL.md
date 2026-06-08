@@ -1,11 +1,12 @@
 ---
 name: writing-design-docs
 description: >
-  Use when a rough idea, vague request, bug report, feature request, defined
-  issue, architecture question, RFC, technical proposal, or design review topic
-  needs to become a concise design document. Also triggers on: "write a design
-  doc", "draft an RFC", "prepare a design review", "compare approaches",
-  "scope this", "clarify the problem", or "help me think through this".
+  Use when rough engineering or product context needs to become a concise
+  design doc, RFC, technical proposal, architecture decision, or design review
+  artifact. Triggers on feature requests, bug reports, defined issues, vague
+  ideas, architecture questions, approach comparisons, scoping, goals/non-goals,
+  current-code research, comparable-product research, or written recommendations
+  for a design decision. Not for implementation-only tasks.
 ---
 
 # Writing Design Docs
@@ -21,12 +22,22 @@ RESEARCH CURRENT CODE AND MAINSTREAM DESIGNS BEFORE PROPOSING
 
 ## Workflow
 
+| Phase | Do not move on until |
+| --- | --- |
+| Understand | The product/system problem, actors, workflow, and known facts are clear. |
+| Clarify | Remaining unknowns either have answers or explicit conservative defaults. |
+| Research | Relevant current code/docs and comparable designs have been inspected. |
+| Compare | Viable approaches and tradeoffs are fairly represented, unless one local fix is clearly enough. |
+| Write | The doc shape matches the scope and avoids execution planning. |
+| Review | Claims trace back to evidence, goals, constraints, or stated assumptions. |
+
 ### Phase 1: Understand The Problem
 
 - Restate the user's problem in concrete product and engineering terms.
 - Read the provided artifacts and cheap repo facts: issue text, specs, screenshots, product notes, obvious entry-point files.
 - Identify the product area, actors, affected workflow, and current behavior.
 - Separate facts from assumptions.
+- If the user only wants an implementation, code review, or quick answer, do not force a design doc; this skill stops at design.
 
 ### Phase 2: Ask Clarifying Questions
 
@@ -46,6 +57,8 @@ With scope settled, research only what materially affects the design:
 - Inspect the current code and existing local patterns the design must fit.
 - Research how mainstream products, frameworks, or comparable systems solve the same class of problem, when the design space is not already obvious.
 - Capture the evidence that matters: file paths, API names, data model facts, existing UX behavior, prior docs, external references.
+- Scale research to risk: small local changes may need only repo evidence; API, data model, security, UX, or cross-team designs need broader current-state and comparable-design evidence.
+- Prefer concrete source notes over generic claims. "Similar products separate draft and published state" is weak; naming the products, flows, docs, or code paths that support the claim is strong.
 - If the request spans multiple independent systems, recommend splitting into separate design docs before continuing.
 
 Do not proceed to design until you can answer:
@@ -79,7 +92,7 @@ For each approach, capture:
 - Fit with goals and non-goals
 - Risks or unknowns
 
-Lead with a recommendation only after comparing the options.
+Lead with a recommendation only after comparing the options. Do not include strawman options just to reach three; when one option is clearly worse, say why briefly and keep the comparison honest.
 
 ### Phase 5: Write The Design Doc
 
@@ -205,6 +218,7 @@ Before finishing, revise the doc against this checklist:
 - The problem statement has no solution language like "add X" or "implement Y".
 - The design is grounded in current code, existing docs, product behavior, or explicit user-provided context.
 - Mainstream or comparable designs were researched when the problem space required it.
+- The research summary names what was inspected, not just the conclusion drawn from it.
 - Every proposed decision traces to a goal, constraint, or current-state fact.
 - Options are compared, not dismissed, when multiple viable approaches exist.
 - The recommendation and tradeoffs are explicit when the doc includes approaches.
