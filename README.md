@@ -21,4 +21,4 @@ npx skills update boojack/skills
 Use when a rough idea, vague request, defined issue, RFC, or technical proposal needs to become a clear design doc.
 
 Produces:
-- `docs/design-docs/YYYY-MM-DD-<slug>.md`
+- Existing design/RFC/proposal directory, or `docs/designs/YYYY-MM-DD-<slug>.md`

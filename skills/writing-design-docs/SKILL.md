@@ -96,7 +96,7 @@ Lead with a recommendation only after comparing the options. Do not include stra
 
 ### Phase 5: Write The Design Doc
 
-Save to `docs/design-docs/YYYY-MM-DD-<slug>.md` unless the user requests another path.
+Save to the repository's existing design, RFC, or proposal directory when one exists. Otherwise use `docs/designs/YYYY-MM-DD-<slug>.md`, unless the user requests another path.
 
 Use this structure by default:
 
