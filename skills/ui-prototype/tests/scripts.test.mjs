@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url"
 const testDir = path.dirname(fileURLToPath(import.meta.url))
 const skillDir = path.resolve(testDir, "..")
 const scriptsDir = path.join(skillDir, "scripts")
+const starterDir = path.join(skillDir, "templates", "base-nova")
 const verifier = path.join(scriptsDir, "verify-single-html.mjs")
 
 function run(command, args) {
@@ -40,6 +41,21 @@ test("skill identity matches its directory and requires explicit activation", as
   assert.match(skillSource, /\/ui-prototype/)
 })
 
+test("skill defines focused, comparison, and measurable layout contracts", async () => {
+  const skillSource = await readFile(path.join(skillDir, "SKILL.md"), "utf8")
+
+  assert.match(skillSource, /Focused mode/)
+  assert.match(skillSource, /Comparison mode/)
+  assert.match(skillSource, /shared baseline/i)
+  assert.match(skillSource, /design guide/i)
+  assert.match(skillSource, /data-critical-surface/)
+  assert.match(skillSource, /getBoundingClientRect/)
+  assert.match(skillSource, /scrollWidth/)
+  assert.match(skillSource, /1440x900/)
+  assert.match(skillSource, /390x844/)
+  assert.match(skillSource, /does not recreate unrelated application chrome/)
+})
+
 test("every bundled script exposes --help", () => {
   const scripts = [
     ["bash", [path.join(scriptsDir, "init-project.sh"), "--help"]],
@@ -69,6 +85,7 @@ test("init dry-run does not create the target", async () => {
 
   assert.equal(result.status, 0, result.stderr)
   assert.match(result.stdout, /Dry run: no files will be written/)
+  assert.match(result.stdout, /bundled Base UI starter \(fast path\)/)
   assert.equal(
     run(process.execPath, ["-e", `process.exit(require("node:fs").existsSync(${JSON.stringify(target)}) ? 1 : 0)`]).status,
     0
@@ -99,6 +116,39 @@ test("init refuses Git worktree targets without explicit permission", async () =
   assert.match(allowed.stdout, /Dry run: no files will be written/)
 })
 
+test("bundled starter is a minimal pinned shadcn Base UI project", async () => {
+  const packageJson = JSON.parse(
+    await readFile(path.join(starterDir, "package.json"), "utf8")
+  )
+  const components = JSON.parse(
+    await readFile(path.join(starterDir, "components.json"), "utf8")
+  )
+  const initSource = await readFile(
+    path.join(scriptsDir, "init-project.sh"),
+    "utf8"
+  )
+
+  assert.equal(components.style, "base-nova")
+  assert.equal(packageJson.dependencies.shadcn, "4.16.0")
+  assert.equal(packageJson.dependencies["@base-ui/react"], "1.6.0")
+  assert.equal(packageJson.devDependencies["vite-plugin-singlefile"], "2.3.3")
+  assert.match(packageJson.scripts.typecheck, /tsconfig\.app\.json/)
+  assert.match(initSource, /templates\/base-nova/)
+  assert.match(initSource, /npm install --prefer-offline --no-audit --no-fund/)
+  assert.match(initSource, /--fresh/)
+
+  for (const component of ["button", "card", "badge", "separator"]) {
+    const source = await readFile(
+      path.join(starterDir, "src", "components", "ui", `${component}.tsx`),
+      "utf8"
+    )
+    assert.match(
+      source,
+      /@base-ui\/react|data-slot|SeparatorPrimitive|React\.ComponentProps/
+    )
+  }
+})
+
 test("build and Vite overlay keep implicit output outside the project", async () => {
   const buildSource = await readFile(
     path.join(scriptsDir, "build-single-html.sh"),
@@ -111,10 +161,25 @@ test("build and Vite overlay keep implicit output outside the project", async ()
 
   assert.match(buildSource, /ui-prototype-build\.XXXXXX/)
   assert.match(buildSource, /ui-prototype-output\.XXXXXX/)
+  assert.match(buildSource, /--skip-typecheck/)
   assert.doesNotMatch(buildSource, /OUTPUT_PATH="\$PROJECT_DIR\/bundle\.html"/)
   assert.match(configureSource, /UI_PROTOTYPE_BUILD_DIR is required/)
   assert.match(configureSource, /outDir: outputDirectory/)
   assert.doesNotMatch(configureSource, /outDir: "\.single-html"/)
+})
+
+test("configure reuses an installed single-file plugin", async () => {
+  const configureSource = await readFile(
+    path.join(scriptsDir, "configure-project.sh"),
+    "utf8"
+  )
+
+  assert.match(configureSource, /PLUGIN_DECLARED/)
+  assert.match(
+    configureSource,
+    /node_modules\/vite-plugin-singlefile\/package\.json/
+  )
+  assert.match(configureSource, /Using the installed vite-plugin-singlefile/)
 })
 
 test("configure dry-run validates without modifying the project", async () => {
@@ -163,6 +228,53 @@ test("configure dry-run validates without modifying the project", async () => {
     ]).status,
     0
   )
+})
+
+test("generated overlay type-safely resolves object or function Vite configs", async () => {
+  const root = await mkdtemp(path.join(tmpdir(), "single-html-overlay-test-"))
+  const packageJson = {
+    name: "fixture",
+    private: true,
+    scripts: {},
+    dependencies: {
+      "@base-ui/react": "1.6.0",
+      "@tailwindcss/vite": "4.3.3",
+      react: "19.2.8",
+      shadcn: "4.16.0",
+      tailwindcss: "4.3.3",
+      vite: "8.1.5",
+      "vite-plugin-singlefile": "2.3.3",
+    },
+  }
+
+  await writeFile(
+    path.join(root, "package.json"),
+    `${JSON.stringify(packageJson, null, 2)}\n`
+  )
+  await writeFile(
+    path.join(root, "components.json"),
+    `${JSON.stringify({ style: "base-nova" }, null, 2)}\n`
+  )
+  await writeFile(path.join(root, "index.html"), completeHtml(""))
+  await writeFile(
+    path.join(root, "vite.config.ts"),
+    'import { defineConfig } from "vite"\nexport default defineConfig({})\n'
+  )
+
+  const result = run(process.execPath, [
+    path.join(scriptsDir, "configure-project.mjs"),
+    root,
+  ])
+  assert.equal(result.status, 0, result.stderr)
+
+  const overlay = await readFile(
+    path.join(root, "vite.singlefile.config.ts"),
+    "utf8"
+  )
+  assert.match(overlay, /type ConfigEnv/)
+  assert.match(overlay, /type UserConfig/)
+  assert.match(overlay, /resolveBaseConfig/)
+  assert.match(overlay, /await resolveBaseConfig\(baseConfigExport, env\)/)
 })
 
 test("verifier accepts one embedded HTML and copies it", async () => {

@@ -4,11 +4,15 @@ set -euo pipefail
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/build-single-html.sh <project-directory> [output.html]
+  bash scripts/build-single-html.sh <project-directory> [output.html] [--skip-typecheck]
 
 Typecheck, build, and verify a configured single-HTML project. The default
 output is ui-prototype.html in a task-specific system temporary directory.
 Build intermediates are also temporary and are removed after verification.
+
+Options:
+  --skip-typecheck  Skip typecheck only on a repeat build after an earlier
+                    successful typecheck.
 
 Example:
   bash scripts/build-single-html.sh /tmp/ui-prototype-demo
@@ -20,14 +24,39 @@ if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
   exit 0
 fi
 
-if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+if [ "$#" -lt 1 ]; then
   usage
   exit 1
 fi
 
 CALLER_DIR="$(pwd)"
 PROJECT_INPUT="$1"
-OUTPUT_INPUT="${2:-}"
+shift
+
+OUTPUT_INPUT=""
+SKIP_TYPECHECK=false
+
+for argument in "$@"; do
+  case "$argument" in
+    --skip-typecheck)
+      SKIP_TYPECHECK=true
+      ;;
+    -*)
+      echo "Error: unknown option '$argument'." >&2
+      usage >&2
+      exit 1
+      ;;
+    *)
+      if [ -n "$OUTPUT_INPUT" ]; then
+        echo "Error: unexpected argument '$argument'." >&2
+        usage >&2
+        exit 1
+      fi
+      OUTPUT_INPUT="$argument"
+      ;;
+  esac
+done
+
 TEMP_BASE="${TMPDIR:-/tmp}"
 TEMP_BASE="${TEMP_BASE%/}"
 
@@ -102,7 +131,9 @@ run_script() {
   )
 }
 
-if node -e '
+if [ "$SKIP_TYPECHECK" = true ]; then
+  echo "Skipping typecheck for this repeat build."
+elif node -e '
 const pkg = require(process.argv[1])
 process.exit(pkg.scripts?.typecheck ? 0 : 1)
 ' "$PROJECT_DIR/package.json"; then

@@ -7,17 +7,20 @@ DEFAULT_PRESET="nova"
 usage() {
   cat <<'EOF'
 Usage:
-  bash scripts/init-project.sh <project-directory> [preset] [--dry-run] [--allow-repo]
+  bash scripts/init-project.sh <project-directory> [preset] [--fresh] [--dry-run] [--allow-repo]
 
 Create a new Vite + React + Tailwind 4 project using shadcn components backed
-by Base UI, then configure its single-HTML build. Targets inside a Git
-worktree are rejected by default.
+by Base UI, then configure its single-HTML build. The default nova path copies
+a bundled shadcn-generated starter and performs one dependency install.
+Targets inside a Git worktree are rejected by default.
 
 Arguments:
   project-directory  New directory to create; existing targets are rejected.
   preset             nova (default), vega, maia, lyra, mira, luma, sera, rhea.
 
 Options:
+  --fresh            Regenerate through the pinned shadcn CLI instead of using
+                     the bundled nova starter. Non-nova presets imply this.
   --dry-run          Validate inputs and print planned actions without writing.
   --allow-repo       Permit a target inside a Git worktree. Use only when the
                      user explicitly requests retained project source.
@@ -43,11 +46,15 @@ shift
 
 PRESET="$DEFAULT_PRESET"
 PRESET_SET=false
+FRESH=false
 DRY_RUN=false
 ALLOW_REPO=false
 
 for argument in "$@"; do
   case "$argument" in
+    --fresh)
+      FRESH=true
+      ;;
     --dry-run)
       DRY_RUN=true
       ;;
@@ -127,57 +134,68 @@ if [ -e "$PROJECT_DIR" ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATE_DIR="$SCRIPT_DIR/../templates/base-nova"
 
 STARTER_COMPONENTS=(
   button
   card
-  input
-  label
-  textarea
   badge
   separator
-  field
-  select
-  checkbox
-  switch
-  tabs
-  dialog
-  dropdown-menu
-  tooltip
-  table
 )
+
+USE_TEMPLATE=false
+if [ "$PRESET" = "$DEFAULT_PRESET" ] && [ "$FRESH" = false ]; then
+  USE_TEMPLATE=true
+fi
 
 if [ "$DRY_RUN" = true ]; then
   echo "Dry run: no files will be written."
   echo "Target: $PROJECT_DIR"
   echo "Preset: $PRESET"
   echo "shadcn: $SHADCN_VERSION"
-  echo "Components: ${STARTER_COMPONENTS[*]}"
-  echo "Next: configure the single-file overlay and run npm run typecheck."
+  if [ "$USE_TEMPLATE" = true ]; then
+    echo "Source: bundled Base UI starter (fast path)"
+    echo "Core components: ${STARTER_COMPONENTS[*]}"
+  else
+    echo "Source: pinned shadcn CLI"
+    echo "Starter components: ${STARTER_COMPONENTS[*]}"
+  fi
+  echo "Next: configure the single-file overlay; final build runs typecheck."
   exit 0
 fi
 
-echo "Creating a shadcn Vite project with Base UI and the '$PRESET' preset..."
-(
-  cd "$PROJECT_PARENT"
-  npx --yes "shadcn@$SHADCN_VERSION" init \
-    --template=vite \
-    --base=base \
-    --preset="$PRESET" \
-    --name="$PROJECT_NAME" \
-    --no-monorepo \
-    --yes \
-    --pointer \
-    "${STARTER_COMPONENTS[@]}"
-)
+if [ "$USE_TEMPLATE" = true ]; then
+  if [ ! -d "$TEMPLATE_DIR" ]; then
+    echo "Error: bundled starter not found: $TEMPLATE_DIR" >&2
+    exit 1
+  fi
+
+  echo "Copying the bundled shadcn Base UI starter..."
+  mkdir "$PROJECT_DIR"
+  cp -R "$TEMPLATE_DIR"/. "$PROJECT_DIR"
+
+  echo "Installing starter dependencies with the local npm cache..."
+  (
+    cd "$PROJECT_DIR"
+    npm install --prefer-offline --no-audit --no-fund
+  )
+else
+  echo "Creating a fresh shadcn Vite project with Base UI and the '$PRESET' preset..."
+  (
+    cd "$PROJECT_PARENT"
+    npx --yes "shadcn@$SHADCN_VERSION" init \
+      --template=vite \
+      --base=base \
+      --preset="$PRESET" \
+      --name="$PROJECT_NAME" \
+      --no-monorepo \
+      --yes \
+      --pointer \
+      "${STARTER_COMPONENTS[@]}"
+  )
+fi
 
 bash "$SCRIPT_DIR/configure-project.sh" "$PROJECT_DIR"
-
-echo "Running the generated typecheck..."
-(
-  cd "$PROJECT_DIR"
-  npm run typecheck
-)
 
 echo
 echo "Project ready: $PROJECT_DIR"

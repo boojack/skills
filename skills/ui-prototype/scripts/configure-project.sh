@@ -66,8 +66,24 @@ if [ ! -f "$PROJECT_DIR/package.json" ]; then
   exit 1
 fi
 
+PLUGIN_DECLARED=false
+if node -e '
+const pkg = require(process.argv[1])
+const all = { ...pkg.dependencies, ...pkg.devDependencies }
+process.exit(all["vite-plugin-singlefile"] ? 0 : 1)
+' "$PROJECT_DIR/package.json"; then
+  PLUGIN_DECLARED=true
+fi
+
 if [ "$DRY_RUN" = true ]; then
-  echo "Dry run: would install vite-plugin-singlefile@$VITE_SINGLEFILE_VERSION."
+  if [ "$PLUGIN_DECLARED" = true ]; then
+    echo "Dry run: vite-plugin-singlefile is already declared."
+  else
+    echo "Dry run: would install vite-plugin-singlefile@$VITE_SINGLEFILE_VERSION."
+  fi
+elif [ "$PLUGIN_DECLARED" = true ] &&
+  [ -f "$PROJECT_DIR/node_modules/vite-plugin-singlefile/package.json" ]; then
+  echo "Using the installed vite-plugin-singlefile dependency."
 else
   echo "Installing vite-plugin-singlefile@$VITE_SINGLEFILE_VERSION..."
   if [ -f "$PROJECT_DIR/pnpm-lock.yaml" ]; then
