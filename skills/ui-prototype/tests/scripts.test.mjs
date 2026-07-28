@@ -56,6 +56,47 @@ test("skill defines focused, comparison, and measurable layout contracts", async
   assert.match(skillSource, /does not recreate unrelated application chrome/)
 })
 
+test("skill keeps implementation and browser QA bounded", async () => {
+  const skillSource = await readFile(path.join(skillDir, "SKILL.md"), "utf8")
+  const wordCount = skillSource.trim().split(/\s+/).length
+  const lineCount = skillSource.split("\n").length
+
+  assert.ok(wordCount <= 1200, `SKILL.md has ${wordCount} words`)
+  assert.ok(lineCount <= 220, `SKILL.md has ${lineCount} lines`)
+  assert.match(skillSource, /Fully\s+implement the recommended path/)
+  assert.match(skillSource, /Test the verified HTML, not both/)
+  assert.match(skillSource, /at most\s+one decision-defining alternative/)
+  assert.match(skillSource, /Do not exhaustively click every approach/)
+  assert.match(skillSource, /rerun only the failed interaction or geometry check/)
+  assert.match(skillSource, /Never configure the source repository/)
+})
+
+test("skill keeps theme contextual and the visual system restrained", async () => {
+  const skillSource = await readFile(path.join(skillDir, "SKILL.md"), "utf8")
+  const evalSource = await readFile(
+    path.join(skillDir, "evals", "tasks.md"),
+    "utf8"
+  )
+  const starterCss = await readFile(
+    path.join(starterDir, "src", "index.css"),
+    "utf8"
+  )
+
+  assert.match(skillSource, /Treat theme as context, not a feature/)
+  assert.match(skillSource, /product's light, dark,\s+or brand scheme/)
+  assert.match(skillSource, /Do not add a\s+theme switch/)
+  assert.doesNotMatch(skillSource, /light mode only|Do not add a dark palette/)
+  assert.match(skillSource, /Do not default to\s+purple accents/)
+  assert.match(skillSource, /purple accents,[\s\S]*Inter/)
+  assert.match(skillSource, /a wall of Cards/)
+  assert.match(skillSource, /reserve\s+fully\s+rounded pills/i)
+  assert.match(skillSource, /layout task-aligned/)
+  assert.match(evalSource, /theme from the product reference or starter default/)
+  assert.doesNotMatch(evalSource, /light\/dark mode|theme change/)
+  assert.doesNotMatch(starterCss, /color-scheme:\s*light/)
+  assert.match(starterCss, /^\.dark\s*\{/m)
+})
+
 test("every bundled script exposes --help", () => {
   const scripts = [
     ["bash", [path.join(scriptsDir, "init-project.sh"), "--help"]],
@@ -127,15 +168,22 @@ test("bundled starter is a minimal pinned shadcn Base UI project", async () => {
     path.join(scriptsDir, "init-project.sh"),
     "utf8"
   )
+  const appSource = await readFile(
+    path.join(starterDir, "src", "App.tsx"),
+    "utf8"
+  )
 
   assert.equal(components.style, "base-nova")
   assert.equal(packageJson.dependencies.shadcn, "4.16.0")
   assert.equal(packageJson.dependencies["@base-ui/react"], "1.6.0")
   assert.equal(packageJson.devDependencies["vite-plugin-singlefile"], "2.3.3")
+  assert.equal(packageJson.dependencies["next-themes"], undefined)
   assert.match(packageJson.scripts.typecheck, /tsconfig\.app\.json/)
   assert.match(initSource, /templates\/base-nova/)
   assert.match(initSource, /npm install --prefer-offline --no-audit --no-fund/)
   assert.match(initSource, /--fresh/)
+  assert.match(appSource, /Neutral baseline/)
+  assert.doesNotMatch(appSource, /<Card|justify-center/)
 
   for (const component of ["button", "card", "badge", "separator"]) {
     const source = await readFile(

@@ -8,8 +8,8 @@ generated projects, bundles, command traces, and browser evidence.
 Prompt:
 
 > `/ui-prototype` Visualize a compact expense-splitting idea with participant
-> management, amount inputs, validation, a result table, light/dark mode, and a
-> reset confirmation.
+> management, amount inputs, validation, a result table, and a reset
+> confirmation.
 
 Assertions:
 
@@ -19,13 +19,22 @@ Assertions:
   requires another preset or a fresh scaffold.
 - Uses the official shadcn Base UI scaffold and generated components.
 - Uses Tailwind tokens; no authored raw stylesheet or hand-rolled primitives.
+- Derives one coherent theme from the product reference or starter default;
+  does not spend scope on theme switching or system synchronization unless the
+  prompt requests it.
+- Avoids default purple gradients, centered marketing-page composition, Inter,
+  excessive pills, and uniformly rounded card walls.
+- Uses borders, dividers, spacing, and typography before adding shadows or
+  containers.
 - Typecheck and mechanical bundle verification pass.
 - Scratch project and build intermediates stay outside the user's repository.
 - Delivery uses the host's output mechanism when available and the system
   temporary fallback otherwise.
 - Temporary build directory contains only `index.html`; delivered artifact is
   `ui-prototype.html`.
-- Playwright exercises form validation, reset confirmation, and theme change.
+- Playwright exercises form validation and reset confirmation.
+- Runs the full browser suite against the verified HTML once rather than
+  duplicating it on both the development server and final bundle.
 - Playwright captures the most demanding state at wide and narrow viewports.
 - Critical surfaces remain inside the viewport with no unapproved overflow.
 - Console has zero errors and the static request list contains only the HTML.
@@ -44,14 +53,20 @@ Assertions:
   complete application shell.
 - Keeps every approach's name, hypothesis, design guide, benefit, cost, and
   failure risk directly available for comparison.
+- Keeps the same theme tokens, type scale, spacing, dimensions, and visual
+  weight across all approaches.
 - Uses side-by-side or stacked approach guidance instead of hiding all
   decision evidence behind sequential tabs.
 - If one shared demo stage changes by approach, the guides remain visible and
   the surrounding product context does not change.
+- Fully implements the recommended path; alternatives implement only their
+  decision-defining differences unless the prompt requests more.
+- Does not add generic editor lifecycle, persistence, reset, or unrelated edge
+  cases merely to make the prototype feel complete.
 - The Schema Editor or equivalent primary panel is complete, legible, and
   unclipped at wide and narrow viewports.
-- Browser evidence includes screenshots and computed geometry for the most
-  demanding open-panel state.
+- Browser evidence uses a bounded pass: two viewport screenshots, the primary
+  path, at most one alternative, and one consolidated geometry check.
 
 ## Case 3: Adapt An Existing Project
 
