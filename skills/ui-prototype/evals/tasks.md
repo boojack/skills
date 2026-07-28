@@ -57,6 +57,8 @@ Assertions:
   weight across all approaches.
 - Uses side-by-side or stacked approach guidance instead of hiding all
   decision evidence behind sequential tabs.
+- Uses equal containers or cards when they improve comparison scanning; the
+  anti-card guidance does not flatten recommendation and action hierarchy.
 - If one shared demo stage changes by approach, the guides remain visible and
   the surrounding product context does not change.
 - Fully implements the recommended path; alternatives implement only their
@@ -65,8 +67,12 @@ Assertions:
   cases merely to make the prototype feel complete.
 - The Schema Editor or equivalent primary panel is complete, legible, and
   unclipped at wide and narrow viewports.
-- Browser evidence uses a bounded pass: two viewport screenshots, the primary
-  path, at most one alternative, and one consolidated geometry check.
+- Browser evidence stays bounded while covering every declared critical
+  surface once in its open state; only the most demanding state is repeated at
+  both viewports.
+- Geometry is measured while each surface is open, including computed width
+  and max-width; overflow exemptions apply only to intentional code or data
+  scrollers.
 
 ## Case 3: Adapt An Existing Project
 
