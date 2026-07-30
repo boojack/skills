@@ -14,7 +14,8 @@ Prompt:
 Assertions:
 
 - Makes the splitting workflow and its validation states immediately tangible.
-- Uses focused mode and does not recreate unrelated application navigation.
+- Infers a single-direction artifact from the request without asking the user
+  to choose a mode, and does not recreate unrelated application navigation.
 - Uses the bundled nova starter and one dependency install unless the prompt
   requires another preset or a fresh scaffold.
 - Uses the official shadcn Base UI scaffold and generated components.
@@ -49,6 +50,8 @@ Prompt:
 Assertions:
 
 - Uses one shared non-empty SQL baseline for all approaches.
+- Infers comparison structure from the alternatives in the prompt without
+  asking the user to select a mode.
 - Focuses on the changed SQL and source-action surfaces rather than mocking the
   complete application shell.
 - Keeps every approach's name, hypothesis, design guide, benefit, cost, and

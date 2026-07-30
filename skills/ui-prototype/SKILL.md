@@ -12,7 +12,7 @@ compatibility: >
   project initialization or component installation, and a modern browser.
 metadata:
   owner: "boojack"
-  version: "1.2.1"
+  version: "1.2.2"
   last-reviewed: "2026-07-28"
   evaluation: "manual-trigger-structural-tests-browser-layout-and-interaction-pass"
 ---
@@ -39,25 +39,21 @@ request to use the named skill.
 
 ## Scope First
 
-Choose the mode before implementation:
+Infer structure from the user's context; never ask them to choose or display a
+mode.
 
-### Focused mode
+For one direction, use one realistic stage and only enough product context to
+locate the change.
 
-Use one realistic stage for one proposed direction. Include only the product
-context required to understand where the change lives.
-
-### Comparison mode
-
-Use one shared baseline and keep every approach's design guide visible; do not
-hide the decision evidence behind tabs. Each guide needs a concise name,
-hypothesis, use-when statement, benefit, cost, and failure risk. Mark a
+When the user supplies alternatives, asks for comparison, or needs a
+recommendation, use one shared baseline and keep every approach's design guide
+visible; do not hide decision evidence behind tabs. Each guide needs a concise
+name, hypothesis, use-when statement, benefit, cost, and failure risk. Mark a
 recommendation when the evidence supports one.
 
 Prefer one shared interactive stage over repeating a large interface. Fully
 implement the recommended path; alternatives need only the state transitions
 that distinguish them.
-
-For either mode:
 
 - Implement only interactions that communicate the decision. Skip generic
   editing, persistence, reset, navigation, and edge cases unless they change
@@ -83,15 +79,15 @@ Geist, and at most one intentional accent.
 
 Keep the layout task-aligned and appropriately compact. Do not default to
 purple accents, decorative gradients, Inter, centered marketing composition,
-uniform large radii, or a decorative wall of Cards. In comparison mode, equal
-containers or Cards are appropriate when they improve direct scanning.
+uniform large radii, or a decorative wall of Cards. When comparing approaches,
+equal containers or Cards are appropriate when they improve direct scanning.
 Otherwise prefer typography, spacing, background layers, borders, and dividers
 before containers and shadows. Reserve fully rounded pills for compact
 statuses, tags, or filters. Use semantic theme tokens and Lucide icons; make
 interaction states understandable without color alone.
 
-In comparison mode, keep type scale, spacing, dimensions, and visual weight
-consistent so styling does not bias the decision.
+When comparing approaches, keep type scale, spacing, dimensions, and visual
+weight consistent so styling does not bias the decision.
 
 ## Build
 
@@ -169,15 +165,15 @@ reveals a specific risk.
 
 Required pass conditions:
 
-- The primary interaction works. In comparison mode, the recommendation,
-  shared baseline, primary stage, and action are immediately scannable, and
-  guides remain directly comparable.
+- The primary interaction works. When approaches are compared, the
+  recommendation, shared baseline, primary stage, and action are immediately
+  scannable, and guides remain directly comparable.
 - Critical overlays and required actions are complete, legible, and inside the
   viewport. Long document sections may use normal vertical page scrolling.
 - No horizontal overflow or clipped descendants exist. `data-allow-overflow`
   permits an intentional code or data scroller; it never excuses clipped
   headings, labels, controls, or an undersized surface.
-- Focused mode does not recreate unrelated application chrome.
+- A single-direction prototype does not recreate unrelated application chrome.
 - Console has zero errors and the static request list contains only the HTML.
 
 If QA fails, inspect all visible issues, correct them in one edit, rebuild, and

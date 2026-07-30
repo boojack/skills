@@ -41,11 +41,13 @@ test("skill identity matches its directory and requires explicit activation", as
   assert.match(skillSource, /\/ui-prototype/)
 })
 
-test("skill defines focused, comparison, and measurable layout contracts", async () => {
+test("skill infers artifact structure and defines measurable layout contracts", async () => {
   const skillSource = await readFile(path.join(skillDir, "SKILL.md"), "utf8")
 
-  assert.match(skillSource, /Focused mode/)
-  assert.match(skillSource, /Comparison mode/)
+  assert.match(skillSource, /Infer structure from the user's context/)
+  assert.match(skillSource, /never ask them to choose or display a\s+mode/)
+  assert.match(skillSource, /For one direction/)
+  assert.match(skillSource, /When the user supplies alternatives/)
   assert.match(skillSource, /shared baseline/i)
   assert.match(skillSource, /design guide/i)
   assert.match(skillSource, /data-critical-surface/)
