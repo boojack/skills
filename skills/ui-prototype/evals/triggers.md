@@ -19,8 +19,10 @@ each prompt to estimate activation consistency.
    realistic admin interface.
 8. Use the ui-prototype skill and show how this multi-step form handles
    validation and recovery.
-9. `/ui-prototype` 把这个审批流程的 UI/UX 想法做成可交互原型。
-10. 请使用 ui-prototype skill 可视化这个列表和详情页的切换方式。
+9. `/ui-prototype` Turn this approval-flow UI/UX idea into an interactive
+   prototype.
+10. Use the ui-prototype skill to visualize navigation between this list and
+    detail page.
 
 ## Should Not Trigger
 
@@ -30,7 +32,7 @@ each prompt to estimate activation consistency.
 4. Create a portable dashboard with filters and dialogs.
 5. Make an interactive product demo using Tailwind and shadcn Base UI.
 6. Adapt this Vite project so it builds to one standalone HTML.
-7. 帮我把这个 UI/UX 想法做成可交互原型。
+7. Turn this UI/UX idea into an interactive prototype.
 8. Create a hosted landing page and publish it.
 9. Review my React components for accessibility.
 10. Write a simple static HTML email template.
