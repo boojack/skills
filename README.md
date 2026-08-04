@@ -12,12 +12,14 @@ npx skills update boojack/skills
 ## `ui-prototype`
 
 Turn UI/UX ideas into polished interactive prototypes delivered as one
-verified, self-contained HTML file. Invoke it explicitly with your agent's
-manual skill syntax, such as `$ui-prototype` or `/ui-prototype`.
+verified, self-contained HTML file.
 
 ## `tighten-writing`
 
 Rewrite supplied prose or notes to be concise, direct, and precise without
-changing their meaning or claim status. Invoke it explicitly with your
-agent's manual skill syntax, such as `$tighten-writing` or
-`/tighten-writing`.
+changing their meaning or claim status.
+
+## `simplify`
+
+Review changed code for reuse, simplification, efficiency, and abstraction-level
+issues, then apply and verify behavior-preserving fixes.
