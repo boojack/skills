@@ -16,8 +16,9 @@ verified, self-contained HTML file.
 
 ## `tighten-writing`
 
-Rewrite supplied prose or notes to be concise, direct, and precise without
-changing their meaning or claim status.
+Restructure and tighten supplied prose or notes so their purpose, reasoning, and
+decisions are clear, direct, and precise without changing meaning or claim
+status.
 
 ## `simplify`
 
